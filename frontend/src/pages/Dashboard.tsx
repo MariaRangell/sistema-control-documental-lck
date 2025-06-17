@@ -8,6 +8,34 @@ const stats = [
 ]
 
 export default function Dashboard() {
+<<<<<<< HEAD
+=======
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [animatedItems, setAnimatedItems] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimatedItems(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    setMousePosition({
+      x: (e.clientX / window.innerWidth - 0.5) * 20,
+      y: (e.clientY / window.innerHeight - 0.5) * 20
+    });
+  };
+
+  const navigateTo = (section: string, event: React.MouseEvent<HTMLDivElement>) => {
+    const element = event.currentTarget;
+    element.style.transform = 'scale(0.95)';
+    
+    setTimeout(() => {
+      element.style.transform = '';
+      console.log('Navegando a:', section);
+    }, 150);
+  };
+
+>>>>>>> 6dec2c8 (Dashboard corregido v2)
   return (
     <div>
       <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
