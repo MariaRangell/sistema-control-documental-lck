@@ -227,4 +227,4 @@ export default function Dashboard() {
     </div>
   );
 }
-/* correcion codigo */
+/* correcion codi */
