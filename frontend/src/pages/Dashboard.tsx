@@ -155,7 +155,7 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Menu Grid */}
+        {/* Menu Grid */} 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {menuItems.map((item, index) => {
             const IconComponent = item.icon;
@@ -227,3 +227,4 @@ export default function Dashboard() {
     </div>
   );
 }
+/* correcion codigo */
