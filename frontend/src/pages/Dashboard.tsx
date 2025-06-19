@@ -1,5 +1,5 @@
 import React, { useState, useEffect, MouseEvent } from 'react';
-import { FileText, Users, Clock, CheckCircle, Building2, UserCheck, BarChart3, Settings, Handshake, Package } from 'lucide-react';
+import { FileText, Users, Clock, CheckCircle, Building2, UserCheck, BarChart3, Settings, Handshake, Package, DollarSign, FolderOpen, Monitor } from 'lucide-react';
 
 // Tipos para los stats y menú
 interface StatItem {
@@ -17,7 +17,7 @@ interface MenuItem {
   bgGradient: string;
 }
 
-type UserRole = 'admin' | 'user' | 'viewer';
+type UserRole = 'admin' |'rh'| 'cliente'| 'proveedor';
 
 const statsByRole: Record<UserRole, StatItem[]> = {
   admin: [
@@ -26,35 +26,53 @@ const statsByRole: Record<UserRole, StatItem[]> = {
     { name: 'Documentos Pendientes', value: '23', icon: Clock, color: 'bg-yellow-500' },
     { name: 'Documentos Aprobados', value: '1,211', icon: CheckCircle, color: 'bg-emerald-500' },
   ],
-  user: [
-    { name: 'Mis Documentos', value: '45', icon: FileText, color: 'bg-blue-500' },
-    { name: 'Pendientes', value: '12', icon: Clock, color: 'bg-yellow-500' },
-    { name: 'Aprobados', value: '33', icon: CheckCircle, color: 'bg-emerald-500' },
+  rh: [
+    { name: 'Documentos Totales', value: '1,234', icon: FileText, color: 'bg-blue-500' },
+    { name: 'Usuarios Activos', value: '45', icon: Users, color: 'bg-green-500' },
+    { name: 'Documentos Pendientes', value: '23', icon: Clock, color: 'bg-yellow-500' },
+    { name: 'Documentos Aprobados', value: '1,211', icon: CheckCircle, color: 'bg-emerald-500' },
   ],
-  viewer: [
-    { name: 'Documentos Disponibles', value: '89', icon: FileText, color: 'bg-blue-500' },
-    { name: 'Documentos Vistos', value: '34', icon: CheckCircle, color: 'bg-emerald-500' },
+  cliente: [
+    { name: 'Documentos Totales', value: '1,234', icon: FileText, color: 'bg-blue-500' },
+    { name: 'Usuarios Activos', value: '45', icon: Users, color: 'bg-green-500' },
+    { name: 'Documentos Pendientes', value: '23', icon: Clock, color: 'bg-yellow-500' },
+    { name: 'Documentos Aprobados', value: '1,211', icon: CheckCircle, color: 'bg-emerald-500' },
+  ],
+  proveedor: [
+    { name: 'Documentos Totales', value: '1,234', icon: FileText, color: 'bg-blue-500' },
+    { name: 'Usuarios Activos', value: '45', icon: Users, color: 'bg-green-500' },
+    { name: 'Documentos Pendientes', value: '23', icon: Clock, color: 'bg-yellow-500' },
+    { name: 'Documentos Aprobados', value: '1,211', icon: CheckCircle, color: 'bg-emerald-500' },
   ],
 };
 
 const menuItemsByRole: Record<UserRole, MenuItem[]> = {
   admin: [
     { id: 'empresa', title: 'Empresa', description: 'Gestión de información corporativa y datos de la organización', icon: Building2, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-gray-900/80' },
-    { id: 'personal', title: 'Personal', description: 'Administración de recursos humanos y documentación del personal', icon: UserCheck, bgGradient: 'bg-gradient-to-br from-gray-600/80 to-red-700/80' },
     { id: 'auditoria', title: 'Auditoría', description: 'Control y seguimiento de procesos de auditoría interna', icon: BarChart3, bgGradient: 'bg-gradient-to-br from-gray-700/80 to-gray-900/80' },
+    { id: 'personal', title: 'Información Personal', description: 'Gestión de tu información y documentación personal', icon: UserCheck, bgGradient: 'bg-gradient-to-br from-gray-600/80 to-red-700/80' },
     { id: 'configuracion', title: 'Configuración', description: 'Ajustes del sistema y parámetros de configuración', icon: Settings, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-800/80' },
     { id: 'clientes', title: 'Clientes', description: 'Gestión de base de datos y documentación de clientes', icon: Handshake, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
     { id: 'proveedores', title: 'Proveedores', description: 'Administración de proveedores y documentación comercial', icon: Package, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
   ],
-  user: [
-    { id: 'documentos', title: 'Mis Documentos', description: 'Gestión de tus documentos personales', icon: FileText, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-gray-900/80' },
-    { id: 'personal', title: 'Información Personal', description: 'Gestión de tu información y documentación personal', icon: UserCheck, bgGradient: 'bg-gradient-to-br from-gray-600/80 to-red-700/80' },
-    { id: 'configuracion', title: 'Configuración', description: 'Ajustes de tu cuenta y preferencias', icon: Settings, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-800/80' },
+  rh: [
+    { id: 'contratos_rh', title: 'Contratos', description: 'Altas/Bajas • Carga/Descarga • Pendientes • Base de Datos', icon: FileText, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
+    { id: 'nomina', title: 'Nómina', description: 'Carga/Descarga • Administración • Recibos • Discrepancias', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
+    { id: 'expedientes_rh', title: 'Expedientes', description: 'Organigrama • Instalaciones • Inventarios • Activos', icon: FolderOpen, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
+    { id: 'equipos', title: 'Equipos', description: 'Altas/Bajas • Inventario • Asignación • Status', icon: Monitor, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
   ],
-  viewer: [
-    { id: 'documentos', title: 'Ver Documentos', description: 'Acceso a documentos disponibles', icon: FileText, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-gray-900/80' },
-    { id: 'historial', title: 'Historial', description: 'Historial de documentos vistos', icon: Clock, bgGradient: 'bg-gradient-to-br from-gray-600/80 to-red-700/80' },
+  cliente: [
+    { id: 'contratos_c', title: 'Contratos', description: 'Altas/Bajas • Carga/Descarga • Base de Datos • Cumplimiento', icon: FileText, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
+    { id: 'facturas_c', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
+    { id: 'expedientes_c', title: 'Expedientes', description: 'Acta constitutiva • Constancia de situación fiscal • Servicios', icon: FolderOpen, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
+    { id: 'contabilidad_c', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: Monitor, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
   ],
+  proveedor: [
+    { id: 'contratos_prov', title: 'Contratos', description: 'Altas/Bajas • Carga/Descarga • Base de Datos • Cumplimiento', icon: FileText, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
+    { id: 'facturas_prov', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
+    { id: 'expedientes_prov', title: 'Expedientes', description: 'Acta constitutiva • Constancia de situación fiscal • Servicios', icon: FolderOpen, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
+    { id: 'contabilidad_prov', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: Monitor, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
+  ]
 };
 
 const FloatingCircles = () => (
@@ -77,7 +95,7 @@ export default function Dashboard() {
     const userData = localStorage.getItem('user');
     if (userData) {
       const { rol, nombre } = JSON.parse(userData);
-      if (rol === 'admin' || rol === 'user' || rol === 'viewer') {
+      if (rol === 'admin' || rol === 'user' || rol === 'rh' || rol === 'proveedor' || rol === 'cliente') {
         setUserRole(rol);
       }
       if (nombre) {
@@ -167,10 +185,125 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {menuItems.map((item: MenuItem, index: number) => {
             const IconComponent = item.icon;
+            
+            // Definir subapartados para RH
+            // Función para obtener subapartados según el rol y el módulo
+            const getSubItems = (itemId: string, role: UserRole) => {
+             // Para RH
+              if (role === 'rh') {
+                switch(itemId) {
+                case 'contratos_rh':
+                  return [
+                    { name: 'Altas/Bajas', icon: '👥' },
+                    { name: 'Carga/Descarga', icon: '📤' },
+                    { name: 'Pendientes', icon: '⏳' },
+                    { name: 'Base de Datos', icon: '🗄️' }
+                  ];
+                case 'nomina':
+                  return [
+                    { name: 'Carga/Descarga', icon: '📤' },
+                    { name: 'Administración', icon: '⚙️' },
+                    { name: 'Recibos', icon: '🧾' },
+                    { name: 'Discrepancias', icon: '⚠️' }
+                  ];
+                case 'expedientes_rh':
+                  return [
+                    { name: 'Organigrama', icon: '🏢' },
+                    { name: 'Instalaciones', icon: '🏭' },
+                    { name: 'Inventarios', icon: '📋' },
+                    { name: 'Activos', icon: '💼' }
+                  ];
+                case 'equipos':
+                  return [
+                    { name: 'Altas/Bajas', icon: '👥' },
+                    { name: 'Inventario', icon: '📋' },
+                    { name: 'Asignación', icon: '🎯' },
+                    { name: 'Status', icon: '📊' }
+                  ];
+                  
+              }
+            }
+            // Para Clientes
+              if (role === 'cliente') {
+                switch(itemId) {
+                case 'contratos_c':
+                  return [
+                    { name: 'Altas/Bajas', icon: '👥' },
+                    { name: 'Carga/Descarga', icon: '📤' },
+                    { name: 'Base de Datos', icon: '🗄️' },
+                    { name: 'Cumplimiento', icon: '✅' }
+              ];
+                case 'facturas_c':
+                  return [
+                    { name: 'Carga/Descarga', icon: '📤' },
+                    { name: 'Administración', icon: '⚙️' },
+                    { name: 'Pendientes', icon: '⏳' },
+                    { name: 'Discrepancias', icon: '⚠️' }
+              ];
+                case 'expedientes_c':
+                  return [
+                    { name: 'Acta Constitutiva', icon: '📜' },
+                    { name: 'Situación Fiscal', icon: '🏛️' },
+                    { name: 'Servicios', icon: '🔧' },
+                    { name: 'Documentos', icon: '📄' }
+             ];
+                case 'contabilidad_c':
+                  return [
+                    {  name: 'Balances', icon: '⚖️' },
+                    { name: 'Pagos', icon: '💳' },
+                    { name: 'Pendientes', icon: '⏳' },
+                    { name: 'Impuestos', icon: '🏛️' }
+            ];
+      }
+    }
+    
+    // Para Proveedores
+    if (role === 'proveedor') {
+      switch(itemId) {
+        case 'contratos_prov':
+          return [
+            { name: 'Altas/Bajas', icon: '👥' },
+            { name: 'Carga/Descarga', icon: '📤' },
+            { name: 'Base de Datos', icon: '🗄️' },
+            { name: 'Cumplimiento', icon: '✅' }
+          ];
+        case 'facturas_prov':
+          return [
+            { name: 'Carga/Descarga', icon: '📤' },
+            { name: 'Administración', icon: '⚙️' },
+            { name: 'Pendientes', icon: '⏳' },
+            { name: 'Discrepancias', icon: '⚠️' }
+          ];
+        case 'expedientes_prov':
+          return [
+            { name: 'Acta Constitutiva', icon: '📜' },
+            { name: 'Situación Fiscal', icon: '🏛️' },
+            { name: 'Servicios', icon: '🔧' },
+            { name: 'Certificaciones', icon: '🏆' }
+          ];
+        case 'contabilidad_prov':
+          return [
+            { name: 'Balances', icon: '⚖️' },
+            { name: 'Pagos', icon: '💳' },
+            { name: 'Pendientes', icon: '⏳' },
+            { name: 'Impuestos', icon: '🏛️' }
+          ];
+      }
+    }
+    
+      return [];
+  };
+
+  const stats = statsByRole[userRole] || [];
+  const menuItems = menuItemsByRole[userRole] || [];
+
+
+            const subItems = getSubItems(item.id);
+            
             return (
               <div
                 key={item.id}
-                className={`group relative min-h-48 ${item.bgGradient} backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 cursor-pointer transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl hover:bg-gray-800/40 hover:border-red-500/30 ${
+                className={`group relative min-h-48 ${item.bgGradient} backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 cursor-pointer transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl hover:bg-gray-800/40 hover:border-red-500/30 overflow-hidden ${
                   animatedItems ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
                 }`}
                 style={{ transitionDelay: `${(index + 4) * 100}ms` }}
@@ -179,7 +312,30 @@ export default function Dashboard() {
                 {/* Hover effect overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -translate-x-full group-hover:translate-x-full rounded-2xl"></div>
                 
-                <div className="relative z-10 flex flex-col items-center text-center h-full justify-center">
+                {/* Subapartados overlay - aparece en hover */}
+                {subItems.length > 0 && (
+                  <div className="absolute inset-0 bg-black/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-2xl flex flex-col justify-center items-center p-6 z-20">
+                    <h4 className="text-white text-lg font-semibold mb-4 text-center">
+                      {item.title}
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3 w-full">
+                      {subItems.map((subItem, subIndex) => (
+                        <div
+                          key={subIndex}
+                          className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-lg p-2 border border-white/20 hover:bg-white/20 transition-all duration-200"
+                          style={{ animationDelay: `${subIndex * 100}ms` }}
+                        >
+                          <span className="text-lg">{subItem.icon}</span>
+                          <span className="text-white text-xs font-medium truncate">
+                            {subItem.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="relative z-10 flex flex-col items-center text-center h-full justify-center group-hover:opacity-0 transition-opacity duration-300">
                   <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                     <IconComponent className="h-12 w-12 text-white group-hover:text-red-400" />
                   </div>
@@ -235,3 +391,4 @@ export default function Dashboard() {
     </div>
   );
 }
+// CODIGO ORIGINAL
