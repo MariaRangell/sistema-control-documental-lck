@@ -181,30 +181,27 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Menu Grid */} 
+{/* Menu Grid */} 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {menuItems.map((item: MenuItem, index: number) => {
             const IconComponent = item.icon;
             
             // Definir subapartados para RH
-            // Función para obtener subapartados según el rol y el módulo
-            const getSubItems = (itemId: string, role: UserRole) => {
-             // Para RH
-              if (role === 'rh') {
-                switch(itemId) {
+            const getSubItems = (itemId: string) => {
+              switch(itemId) {
                 case 'contratos_rh':
                   return [
                     { name: 'Altas/Bajas', icon: '👥' },
                     { name: 'Carga/Descarga', icon: '📤' },
                     { name: 'Pendientes', icon: '⏳' },
-                    { name: 'Base de Datos', icon: '🗄️' }
+                    { name: 'Base de Datos', icon: '🗄' }
                   ];
                 case 'nomina':
                   return [
                     { name: 'Carga/Descarga', icon: '📤' },
-                    { name: 'Administración', icon: '⚙️' },
+                    { name: 'Administración', icon: '⚙' },
                     { name: 'Recibos', icon: '🧾' },
-                    { name: 'Discrepancias', icon: '⚠️' }
+                    { name: 'Discrepancias', icon: '⚠' }
                   ];
                 case 'expedientes_rh':
                   return [
@@ -219,14 +216,9 @@ export default function Dashboard() {
                     { name: 'Inventario', icon: '📋' },
                     { name: 'Asignación', icon: '🎯' },
                     { name: 'Status', icon: '📊' }
-                  ];
-                  
-              }
-            }
-            // Para Clientes
-              if (role === 'cliente') {
-                switch(itemId) {
-                case 'contratos_c':
+                  ]; 
+                  //clientes
+                  case 'contratos_c':    
                   return [
                     { name: 'Altas/Bajas', icon: '👥' },
                     { name: 'Carga/Descarga', icon: '📤' },
@@ -246,7 +238,7 @@ export default function Dashboard() {
                     { name: 'Situación Fiscal', icon: '🏛️' },
                     { name: 'Servicios', icon: '🔧' },
                     { name: 'Documentos', icon: '📄' }
-             ];
+            ];
                 case 'contabilidad_c':
                   return [
                     {  name: 'Balances', icon: '⚖️' },
@@ -254,13 +246,8 @@ export default function Dashboard() {
                     { name: 'Pendientes', icon: '⏳' },
                     { name: 'Impuestos', icon: '🏛️' }
             ];
-      }
-    }
-    
-    // Para Proveedores
-    if (role === 'proveedor') {
-      switch(itemId) {
-        case 'contratos_prov':
+               //Proveedores
+                case 'contratos_prov':
           return [
             { name: 'Altas/Bajas', icon: '👥' },
             { name: 'Carga/Descarga', icon: '📤' },
@@ -287,11 +274,10 @@ export default function Dashboard() {
             { name: 'Pagos', icon: '💳' },
             { name: 'Pendientes', icon: '⏳' },
             { name: 'Impuestos', icon: '🏛️' }
-          ];
-      }
-    }
-    
-      return [];
+          ];                     
+                default:
+                  return [];  
+                }
   };
 
   const stats = statsByRole[userRole] || [];
