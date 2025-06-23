@@ -11,12 +11,13 @@ type UserRole = 'admin' | 'cliente' | 'proveedor' | 'rh' | 'empresa' | 'auditori
 type UserData = { nombre: string; rol: UserRole }
 type NavItem = { name: string; href: string; icon: React.ElementType }
 type NavByRole = Partial<Record<UserRole, NavItem[]>>
+type SubItem = { name: string; icon: string; href?: string }
 
 const navByRole: NavByRole = {
   admin: [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Documentos', href: '/documents', icon: FileText },
-    { name: 'Usuarios', href: '/users', icon: Users },
+    { name: 'Usuarios', href: '/users', icon: Users },,
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
   empresa: [
@@ -56,181 +57,187 @@ const navByRole: NavByRole = {
   ],
 }
 
-function getSubItems(itemName: string, rol: UserRole) {
-  const adminItems = { //Menu Aministrador
+function getSubItems(itemName: string, rol: UserRole): SubItem[] {
+  const adminItems: Record<string, SubItem[]> = { //MENU ADMINISTRADOR
     'Empresa': [
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Administración', icon: '⚙️' },
-      { name: 'Recibos', icon: '🧾' },
-      { name: 'Discrepancias', icon: '⚠️' },
+      { name: 'Finanzas', icon: '💰', href: '/empresa/finanzas' }, 
+      { name: 'Infraestructura', icon: '🏭', href: '/empresa/infraestructura' },
+      { name: 'Legal', icon: '🧾', href: '/empresa/legal' },
+      { name: 'Facturación', icon: '📋', href: '/empresa/facturacion' },
     ],
     'Auditoria': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Pendientes', icon: '⏳' },
-      { name: 'Base de Datos', icon: '🗄️' },
+      { name: 'Monitoreo', icon: '📊', href: '/auditoria/monitoreo' },
+      { name: 'Accesos', icon: '🔑', href: '/auditoria/accesos' },
+      { name: 'Base de Datos', icon: '🗄️', href: '/auditoria/base-datos' },
+      { name: 'Discrepancias', icon: '⚠️', href: '/auditoria/discrepancias' },
     ],
     'Recursos Humanos': [
-      { name: 'Organigrama', icon: '🏢' },
-      { name: 'Instalaciones', icon: '🏭' },
-      { name: 'Inventarios', icon: '📋' },
-      { name: 'Activos', icon: '💼' },
+      { name: 'Contratos', icon: '📋', href: '/rh/contratos' },
+      { name: 'Expedientes', icon: '📋', href: '/rh/expedientes' },
+      { name: 'Nómina', icon: '💰', href: '/rh/nomina' },
+      { name: 'Equipos', icon: '💻', href: '/rh/equipos' },
     ],
     'Configuración': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Inventario', icon: '📋' },
-      { name: 'Asignación', icon: '🎯' },
-      { name: 'Status', icon: '📊' },
+      { name: 'Accesos', icon: '🔑', href: '/configuracion/accesos' },
+      { name: 'Sistema', icon: '⚙️', href: '/configuracion/sistema' },
     ],
     'Clientes': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Inventario', icon: '📋' },
-      { name: 'Asignación', icon: '🎯' },
-      { name: 'Status', icon: '📊' },
+      { name: 'Contratos', icon: '👥', href: '/clientes/contratos' },
+      { name: 'Facturas', icon: '📋', href: '/clientes/facturas' },
+      { name: 'Expedientes', icon: '💼', href: '/clientes/expedientes' },
+      { name: 'Contabilidad', icon: '💰', href: '/clientes/contabilidad' },
     ],
     'Proveedores': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Inventario', icon: '📋' },
-      { name: 'Asignación', icon: '🎯' },
-      { name: 'Status', icon: '📊' },
-    ]
-  }
-  const rhItems = { //Menu RH
-    'Nómina': [
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Administración', icon: '⚙️' },
-      { name: 'Recibos', icon: '🧾' },
-      { name: 'Discrepancias', icon: '⚠️' },
-    ],
-    'Contratos': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Pendientes', icon: '⏳' },
-      { name: 'Base de Datos', icon: '🗄️' },
-    ],
-    'Expedientes': [
-      { name: 'Organigrama', icon: '🏢' },
-      { name: 'Instalaciones', icon: '🏭' },
-      { name: 'Inventarios', icon: '📋' },
-      { name: 'Activos', icon: '💼' },
-    ],
-    'Equipos': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Inventario', icon: '📋' },
-      { name: 'Asignación', icon: '🎯' },
-      { name: 'Status', icon: '📊' },
+      { name: 'Contratos', icon: '👥', href: '/proveedores/contratos' },
+      { name: 'Facturas', icon: '📋', href: '/proveedores/facturas' },
+      { name: 'Expedientes', icon: '💼', href: '/proveedores/expedientes' },
+      { name: 'Contabilidad', icon: '💰', href: '/proveedores/contabilidad' },
     ]
   }
 
-  const empresaItems = {  //Menu empresa
-    'Finanzas': [
-      { name: 'Tesorería', icon: '📤' },
-      { name: 'SAT', icon: '🏛️' },
-      { name: 'Secretaria de Finanzas', icon: '🧾' },
-      { name: 'Balances', icon: '⚖️' },
+  const rhItems: Record<string, SubItem[]> = { //MENU RH
+    'Nómina': [
+      { name: 'Carga/Descarga', icon: '📤', href: '/rh/nomina/carga' },
+      { name: 'Administración', icon: '⚙️', href: '/rh/nomina/admin' },
+      { name: 'Recibos', icon: '🧾', href: '/rh/nomina/recibos' },
+      { name: 'Discrepancias', icon: '⚠️', href: '/rh/nomina/discrepancias' },
     ],
-    'Infraestructura': [
-      { name: 'Organigrama', icon: '🏢' },
-      { name: 'Instalaciones', icon: '🏭' },
-      { name: 'Inventarios', icon: '📋' },
-      { name: 'Activos', icon: '💼' },
+    'Contratos': [
+      { name: 'Altas/Bajas', icon: '👥', href: '/rh/contratos/altas-bajas' },
+      { name: 'Carga/Descarga', icon: '📤', href: '/rh/contratos/carga' },
+      { name: 'Pendientes', icon: '⏳', href: '/rh/contratos/pendientes' },
+      { name: 'Base de Datos', icon: '🗄️', href: '/rh/contratos/base-datos' },
     ],
-    'Legal': [
-      { name: 'Permisos', icon: '🧾' },
-      { name: 'Lineamientos', icon: '📋' },
-      { name: 'SAT', icon: '🏛️' },
-      { name: 'Aviso de registro REPSE', icon: '📤' },
+    'Expedientes': [
+      { name: 'Organigrama', icon: '🏢', href: '/rh/expedientes/organigrama' },
+      { name: 'Instalaciones', icon: '🏭', href: '/rh/expedientes/instalaciones' },
+      { name: 'Inventarios', icon: '📋', href: '/rh/expedientes/inventarios' },
+      { name: 'Activos', icon: '💼', href: '/rh/expedientes/activos' },
     ],
-    'Facturación': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Base de Datos', icon: '🗄️' },
-      { name: 'Refacturación', icon: '📋' },
+    'Equipos': [
+      { name: 'Altas/Bajas', icon: '👥', href: '/rh/equipos/altas-bajas' },
+      { name: 'Inventario', icon: '📋', href: '/rh/equipos/inventario' },
+      { name: 'Asignación', icon: '🎯', href: '/rh/equipos/asignacion' },
+      { name: 'Status', icon: '📊', href: '/rh/equipos/status' },
     ]
   }
-  const clienteItems = {  //Menu cliente
-    'Contratos_c': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Base de Datos', icon: '🗄️' },
-      { name: 'Cumplimiento', icon: '✅' }
+
+  const empresaItems: Record<string, SubItem[]> = { //MENU EMPRESA
+    'Finanzas': [
+      { name: 'Tesorería', icon: '💰', href: '/empresa/finanzas/tesoreria' },
+      { name: 'SAT', icon: '🏛️', href: '/empresa/finanzas/sat' },
+      { name: 'Secretaria de Finanzas', icon: '🧾', href: '/empresa/finanzas/secretaria' },
+      { name: 'Balances', icon: '⚖️', href: '/empresa/finanzas/balances' },
     ],
-    'Expedientes_c': [
-      { name: 'Acta Constitutiva', icon: '📜' },
-      { name: 'Constancia de Situación Fiscal', icon: '🏛️' },
-      { name: 'Servicios', icon: '🔧' },
+    'Infraestructura': [
+      { name: 'Organigrama', icon: '🏢', href: '/empresa/infraestructura/organigrama' },
+      { name: 'Instalaciones', icon: '🏭', href: '/empresa/infraestructura/instalaciones' },
+      { name: 'Inventarios', icon: '📋', href: '/empresa/infraestructura/inventarios' },
+      { name: 'Activos', icon: '💼', href: '/empresa/infraestructura/activos' },
     ],
-    'Contabilidad_c': [
-      { name: 'Balances', icon: '⚖️' },
-      { name: 'Pagos', icon: '💳' },
-      { name: 'Pendientes', icon: '⏳' },
-      { name: 'Impuestos', icon: '🏛️' }
+    'Legal': [
+      { name: 'Permisos', icon: '🧾', href: '/empresa/legal/permisos' },
+      { name: 'Lineamientos', icon: '📋', href: '/empresa/legal/lineamientos' },
+      { name: 'SAT', icon: '🏛️', href: '/empresa/legal/sat' },
+      { name: 'Aviso de registro REPSE', icon: '📤', href: '/empresa/legal/repse' },
     ],
-    'Facturas_c': [
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Administración', icon: '⚙️' },
-      { name: 'Pendientes', icon: '⏳' },
-      { name: 'Discrepancias', icon: '⚠️' }
+    'Facturación': [
+      { name: 'Altas/Bajas', icon: '👥', href: '/empresa/facturacion/altas-bajas' },
+      { name: 'Carga/Descarga', icon: '📤', href: '/empresa/facturacion/carga' },
+      { name: 'Base de Datos', icon: '🗄️', href: '/empresa/facturacion/base-datos' },
+      { name: 'Refacturación', icon: '📋', href: '/empresa/facturacion/refacturacion' },
     ]
-}
-const proveedorItems = {  //Menu proveedor
-    'Contratos_prov': [
-      { name: 'Altas/Bajas', icon: '👥' },
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Base de Datos', icon: '🗄️' },
-      { name: 'Cumplimiento', icon: '✅' }
+  }
+
+  const clienteItems: Record<string, SubItem[]> = { //MENU CLIENTE
+    'Contratos': [
+      { name: 'Altas/Bajas', icon: '👥', href: '/cliente/contratos/altas-bajas' },
+      { name: 'Carga/Descarga', icon: '📤', href: '/cliente/contratos/carga' },
+      { name: 'Base de Datos', icon: '🗄️', href: '/cliente/contratos/base-datos' },
+      { name: 'Cumplimiento', icon: '✅', href: '/cliente/contratos/cumplimiento' }
     ],
-    'Expedientes_prov': [
-      { name: 'Acta Constitutiva', icon: '📜' },
-      { name: 'Constancia de Situación Fiscal', icon: '🏛️' },
-      { name: 'Servicios', icon: '🔧' },
+    'Expedientes': [
+      { name: 'Acta Constitutiva', icon: '📜', href: '/cliente/expedientes/acta' },
+      { name: 'Constancia de Situación Fiscal', icon: '🏛️', href: '/cliente/expedientes/fiscal' },
+      { name: 'Servicios', icon: '🔧', href: '/cliente/expedientes/servicios' },
     ],
-    'Contabilidad_prov': [
-      { name: 'Balances', icon: '⚖️' },
-      { name: 'Pagos', icon: '💳' },
-      { name: 'Pendientes', icon: '⏳' },
-      { name: 'Impuestos', icon: '🏛️' }
+    'Contabilidad': [
+      { name: 'Balances', icon: '⚖️', href: '/cliente/contabilidad/balances' },
+      { name: 'Pagos', icon: '💳', href: '/cliente/contabilidad/pagos' },
+      { name: 'Pendientes', icon: '⏳', href: '/cliente/contabilidad/pendientes' },
+      { name: 'Impuestos', icon: '🏛️', href: '/cliente/contabilidad/impuestos' }
     ],
-    'Facturas_prov': [
-      { name: 'Carga/Descarga', icon: '📤' },
-      { name: 'Administración', icon: '⚙️' },
-      { name: 'Pendientes', icon: '⏳' },
-      { name: 'Discrepancias', icon: '⚠️' }
+    'Facturas': [
+      { name: 'Carga/Descarga', icon: '📤', href: '/cliente/facturas/carga' },
+      { name: 'Administración', icon: '⚙️', href: '/cliente/facturas/admin' },
+      { name: 'Pendientes', icon: '⏳', href: '/cliente/facturas/pendientes' },
+      { name: 'Discrepancias', icon: '⚠️', href: '/cliente/facturas/discrepancias' }
     ]
-    }
-    const auditoriaItems = {  //Menu auditoria
+  }
+
+  const proveedorItems: Record<string, SubItem[]> = { //MENU PROVEEDOR
+    'Contratos': [
+      { name: 'Altas/Bajas', icon: '👥', href: '/proveedor/contratos/altas-bajas' },
+      { name: 'Carga/Descarga', icon: '📤', href: '/proveedor/contratos/carga' },
+      { name: 'Base de Datos', icon: '🗄️', href: '/proveedor/contratos/base-datos' },
+      { name: 'Cumplimiento', icon: '✅', href: '/proveedor/contratos/cumplimiento' }
+    ],
+    'Expedientes': [
+      { name: 'Acta Constitutiva', icon: '📜', href: '/proveedor/expedientes/acta' },
+      { name: 'Constancia de Situación Fiscal', icon: '🏛️', href: '/proveedor/expedientes/fiscal' },
+      { name: 'Servicios', icon: '🔧', href: '/proveedor/expedientes/servicios' },
+    ],
+    'Contabilidad': [
+      { name: 'Balances', icon: '⚖️', href: '/proveedor/contabilidad/balances' },
+      { name: 'Pagos', icon: '💳', href: '/proveedor/contabilidad/pagos' },
+      { name: 'Pendientes', icon: '⏳', href: '/proveedor/contabilidad/pendientes' },
+      { name: 'Impuestos', icon: '🏛️', href: '/proveedor/contabilidad/impuestos' }
+    ],
+    'Facturas': [
+      { name: 'Carga/Descarga', icon: '📤', href: '/proveedor/facturas/carga' },
+      { name: 'Administración', icon: '⚙️', href: '/proveedor/facturas/admin' },
+      { name: 'Pendientes', icon: '⏳', href: '/proveedor/facturas/pendientes' },
+      { name: 'Discrepancias', icon: '⚠️', href: '/proveedor/facturas/discrepancias' }
+    ]
+  }
+
+  const auditoriaItems: Record<string, SubItem[]> = { //MENU AUDITORIA
     'Monitoreo': [
-      { name: 'Rendimiento', icon: '📊' },
-      { name: 'Procesos', icon: '📤' },
-      { name: 'Alertas', icon: '⚠️' },
-      { name: 'Reportes', icon: '🎯' }
+      { name: 'Rendimiento', icon: '📊', href: '/auditoria/monitoreo/rendimiento' },
+      { name: 'Procesos', icon: '📤', href: '/auditoria/monitoreo/procesos' },
+      { name: 'Alertas', icon: '⚠️', href: '/auditoria/monitoreo/alertas' },
+      { name: 'Reportes', icon: '🎯', href: '/auditoria/monitoreo/reportes' }
     ],
     'Accesos': [
-      { name: 'Conexiones', icon: '⚙️' },
-      { name: 'Consultas', icon: '📋' },
-      { name: 'Bajas', icon: '👥' },
-      { name: 'Restricciones', icon: '⚠️' },
+      { name: 'Conexiones', icon: '⚙️', href: '/auditoria/accesos/conexiones' },
+      { name: 'Consultas', icon: '📋', href: '/auditoria/accesos/consultas' },
+      { name: 'Bajas', icon: '👥', href: '/auditoria/accesos/bajas' },
+      { name: 'Restricciones', icon: '⚠️', href: '/auditoria/accesos/restricciones' },
     ],
     'Base de Datos': [
-      { name: 'Base de Datos', icon: '🗄️' },
-      { name: 'Administración', icon: '💼' },
-      { name: 'Reportar', icon: '⚠️' },
-      { name: 'Capacidad', icon: '✅' }
+      { name: 'Base de Datos', icon: '🗄️', href: '/auditoria/base-datos/database' },
+      { name: 'Administración', icon: '💼', href: '/auditoria/base-datos/admin' },
+      { name: 'Reportar', icon: '⚠️', href: '/auditoria/base-datos/reportar' },
+      { name: 'Capacidad', icon: '✅', href: '/auditoria/base-datos/capacidad' }
     ],
     'Discrepancias': [
-      { name: 'Cargas', icon: '📤' },
-      { name: 'Estatus de los archivos', icon: '✅' },
-      { name: 'Modificaciones', icon: '📋' },
-      { name: 'Avisos', icon: '⚠️' }
+      { name: 'Cargas', icon: '📤', href: '/auditoria/discrepancias/cargas' },
+      { name: 'Estatus de los archivos', icon: '✅', href: '/auditoria/discrepancias/estatus' },
+      { name: 'Modificaciones', icon: '📋', href: '/auditoria/discrepancias/modificaciones' },
+      { name: 'Avisos', icon: '⚠️', href: '/auditoria/discrepancias/avisos' }
     ]
-    }
-  if (rol === 'rh') return rhItems[itemName] || []
-  if (rol === 'empresa') return empresaItems[itemName] || []
-  if (rol === 'cliente') return clienteItems[itemName] || []
-  if (rol === 'proveedor') return proveedorItems[itemName] || []
-  if (rol === 'auditoria') return  auditoriaItems[itemName] || []
-  if (rol === 'admin') return  adminItems[itemName] || []
-  return []
+  }
+
+  const itemsMap: Record<UserRole, Record<string, SubItem[]>> = {
+    admin: adminItems,
+    rh: rhItems,
+    empresa: empresaItems,
+    cliente: clienteItems,
+    proveedor: proveedorItems,
+    auditoria: auditoriaItems
+  }
+
+  return itemsMap[rol]?.[itemName] || []
 }
 
 export default function MainLayout() {
@@ -239,7 +246,11 @@ export default function MainLayout() {
   const [user, setUser] = useState<UserData>({ nombre: '', rol: 'admin' })
 
   useEffect(() => {
-    const userData = localStorage.getItem('user')
+    // Simulación de localStorage para el ejemplo
+    // En un entorno real, descomenta la línea siguiente:
+    // const userData = localStorage.getItem('user')
+    const userData = JSON.stringify({ nombre: 'Usuario Demo', rol: 'admin' })//-----PENDIENTE DE CAMBIAR
+    
     if (userData) {
       setUser(JSON.parse(userData))
     } else {
@@ -248,7 +259,7 @@ export default function MainLayout() {
   }, [navigate])
 
   const handleLogout = () => {
-    localStorage.removeItem('user')
+    // localStorage.removeItem('user') // Descomenta en entorno real
     navigate('/login')
   }
 
@@ -259,8 +270,10 @@ export default function MainLayout() {
       <header className="fixed top-0 left-0 z-50 w-full bg-white shadow-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-6">
-            <img src="/logo1.png" alt="LCK Consultores" className="h-16 w-auto" />
-            <nav className="sm:flex sm:space-x-8">
+            <div className="h-12 w-24 bg-gray-200 rounded flex items-center justify-center">
+              <span className="text-xs font-bold">LCK</span>
+            </div>
+            <nav className="hidden md:flex md:space-x-8">
               {navigation.map((item) => {
                 const isActive = location.pathname === item.href
                 const subItems = getSubItems(item.name, user.rol)
@@ -278,7 +291,11 @@ export default function MainLayout() {
                       <div className="pointer-events-none group-hover:pointer-events-auto absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
                         <div className="py-1">
                           {subItems.map((subItem, index) => (
-                            <Link key={index} to="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
+                            <Link 
+                              key={index} 
+                              to={subItem.href || '#'} 
+                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700"
+                            >
                               <span className="mr-2">{subItem.icon}</span>
                               {subItem.name}
                             </Link>

@@ -29,10 +29,12 @@ function Login() {
     // Datos de ejemplo (en un sistema real, esto se validaría en el servidor)
     const validUsers: ValidUsers = {
       'admin': 'admin123',
-      'usuario': 'password123',
+      'empresa': 'password123',
       'rh': 'doc2024',
       'proveedor': 'prov2024',
-      'cliente': 'cli2024'
+      'cliente': 'cli2024',
+      'auditoria': 'aud2024'
+
     };
 
     if (validUsers[username] && validUsers[username] === password) {
@@ -40,14 +42,16 @@ function Login() {
       let userData = {};
       if (username === 'admin') {
         userData = { nombre: 'Administrador', rol: 'admin' };
-      } else if (username === 'usuario') {
-        userData = { nombre: 'Usuario', rol: 'user' };
       } else if (username === 'rh') {
         userData = { nombre: 'RH', rol: 'rh' };
       } else if (username === 'proveedor') {
         userData = { nombre: 'Proveedor', rol: 'proveedor' };
       } else if (username === 'cliente') {
         userData = { nombre: 'Cliente', rol: 'cliente' };
+      } else if (username === 'auditoria') {
+        userData = { nombre: 'Auditoria', rol: 'auditoria' };
+      } else if (username === 'empresa') {
+        userData = { nombre: 'Empresa', rol: 'empresa' };
       }
       localStorage.setItem('user', JSON.stringify(userData));
       setTimeout(() => {
