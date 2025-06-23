@@ -17,7 +17,7 @@ interface MenuItem {
   bgGradient: string;
 }
 
-type UserRole = 'admin' |'rh'| 'cliente'| 'proveedor';
+type UserRole = 'admin' | 'rh' | 'cliente' | 'proveedor';
 
 const statsByRole: Record<UserRole, StatItem[]> = {
   admin: [
@@ -88,6 +88,7 @@ export default function Dashboard() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [animatedItems, setAnimatedItems] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>('admin');
+  const [actualRole, setActualRole] = useState<UserRole>('admin');
   const [userName, setUserName] = useState<string>('');
 
   useEffect(() => {
@@ -97,6 +98,7 @@ export default function Dashboard() {
       const { rol, nombre } = JSON.parse(userData);
       if (rol === 'admin' || rol === 'user' || rol === 'rh' || rol === 'proveedor' || rol === 'cliente') {
         setUserRole(rol);
+        setActualRole(rol);
       }
       if (nombre) {
         setUserName(nombre);
@@ -112,6 +114,11 @@ export default function Dashboard() {
     });
   };
 
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRole = e.target.value as UserRole;
+    setActualRole(newRole);
+  };
+
   const navigateTo = (section: string, event: MouseEvent<HTMLDivElement>) => {
     const element = event.currentTarget;
     element.style.transform = 'scale(0.95)';
@@ -120,9 +127,6 @@ export default function Dashboard() {
       console.log('Navegando a:', section);
     }, 150);
   };
-
-  const stats = statsByRole[userRole] || [];
-  const menuItems = menuItemsByRole[userRole] || [];
 
   return (
     <div 
@@ -158,9 +162,25 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {/* Selector de Rol visible solo para admin - PERSISTENTE */}
+        {userRole === 'admin' && (
+          <div className="flex justify-center mb-8">
+            <select
+              value={actualRole}
+              onChange={handleRoleChange}
+              className="px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring focus:ring-red-400 bg-white text-gray-700"
+            >
+              <option value="admin">Administrador</option>
+              <option value="rh">Recursos Humanos</option>
+              <option value="cliente">Cliente</option>
+              <option value="proveedor">Proveedor</option>
+            </select>
+          </div>
+        )}
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {stats.map((item: StatItem, index: number) => (
+          {(statsByRole[actualRole] || []).map((item: StatItem, index: number) => (
             <div
               key={item.name}
               className={`relative overflow-hidden rounded-2xl bg-gray-700/10 backdrop-blur-xl border border-gray-300/50 p-6 shadow-2xl transition-all duration-500 hover:scale-105 hover:bg-gold/95 hover:border-red-400/50 ${
@@ -181,12 +201,11 @@ export default function Dashboard() {
           ))}
         </div>
 
-{/* Menu Grid */} 
+        {/* Menu Grid */} 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {menuItems.map((item: MenuItem, index: number) => {
+          {(menuItemsByRole[actualRole] || []).map((item: MenuItem, index: number) => {
             const IconComponent = item.icon;
             
-            // Definir subapartados para RH
             const getSubItems = (itemId: string) => {
               switch(itemId) {
                 case 'contratos_rh':
@@ -217,72 +236,66 @@ export default function Dashboard() {
                     { name: 'Asignación', icon: '🎯' },
                     { name: 'Status', icon: '📊' }
                   ]; 
-                  //clientes
-                  case 'contratos_c':    
+                case 'contratos_c':    
                   return [
                     { name: 'Altas/Bajas', icon: '👥' },
                     { name: 'Carga/Descarga', icon: '📤' },
                     { name: 'Base de Datos', icon: '🗄️' },
                     { name: 'Cumplimiento', icon: '✅' }
-              ];
+                  ];
                 case 'facturas_c':
                   return [
                     { name: 'Carga/Descarga', icon: '📤' },
                     { name: 'Administración', icon: '⚙️' },
                     { name: 'Pendientes', icon: '⏳' },
                     { name: 'Discrepancias', icon: '⚠️' }
-              ];
+                  ];
                 case 'expedientes_c':
                   return [
                     { name: 'Acta Constitutiva', icon: '📜' },
                     { name: 'Situación Fiscal', icon: '🏛️' },
                     { name: 'Servicios', icon: '🔧' },
                     { name: 'Documentos', icon: '📄' }
-            ];
+                  ];
                 case 'contabilidad_c':
                   return [
                     {  name: 'Balances', icon: '⚖️' },
                     { name: 'Pagos', icon: '💳' },
                     { name: 'Pendientes', icon: '⏳' },
                     { name: 'Impuestos', icon: '🏛️' }
-            ];
-               //Proveedores
+                  ];
                 case 'contratos_prov':
-          return [
-            { name: 'Altas/Bajas', icon: '👥' },
-            { name: 'Carga/Descarga', icon: '📤' },
-            { name: 'Base de Datos', icon: '🗄️' },
-            { name: 'Cumplimiento', icon: '✅' }
-          ];
-        case 'facturas_prov':
-          return [
-            { name: 'Carga/Descarga', icon: '📤' },
-            { name: 'Administración', icon: '⚙️' },
-            { name: 'Pendientes', icon: '⏳' },
-            { name: 'Discrepancias', icon: '⚠️' }
-          ];
-        case 'expedientes_prov':
-          return [
-            { name: 'Acta Constitutiva', icon: '📜' },
-            { name: 'Situación Fiscal', icon: '🏛️' },
-            { name: 'Servicios', icon: '🔧' },
-            { name: 'Certificaciones', icon: '🏆' }
-          ];
-        case 'contabilidad_prov':
-          return [
-            { name: 'Balances', icon: '⚖️' },
-            { name: 'Pagos', icon: '💳' },
-            { name: 'Pendientes', icon: '⏳' },
-            { name: 'Impuestos', icon: '🏛️' }
-          ];                     
+                  return [
+                    { name: 'Altas/Bajas', icon: '👥' },
+                    { name: 'Carga/Descarga', icon: '📤' },
+                    { name: 'Base de Datos', icon: '🗄️' },
+                    { name: 'Cumplimiento', icon: '✅' }
+                  ]; 
+                case 'facturas_prov':
+                  return [
+                    { name: 'Carga/Descarga', icon: '📤' },
+                    { name: 'Administración', icon: '⚙️' },
+                    { name: 'Pendientes', icon: '⏳' },
+                    { name: 'Discrepancias', icon: '⚠️' }
+                  ];
+                case 'expedientes_prov':
+                  return [
+                    { name: 'Acta Constitutiva', icon: '📜' },
+                    { name: 'Situación Fiscal', icon: '🏛️' },
+                    { name: 'Servicios', icon: '🔧' },
+                    { name: 'Certificaciones', icon: '🏆' }
+                  ];
+                case 'contabilidad_prov':
+                  return [
+                    { name: 'Balances', icon: '⚖️' },
+                    { name: 'Pagos', icon: '💳' },
+                    { name: 'Pendientes', icon: '⏳' },
+                    { name: 'Impuestos', icon: '🏛️' }
+                  ];                     
                 default:
                   return [];  
-                }
-  };
-
-  const stats = statsByRole[userRole] || [];
-  const menuItems = menuItemsByRole[userRole] || [];
-
+              }
+            };
 
             const subItems = getSubItems(item.id);
             
@@ -377,4 +390,3 @@ export default function Dashboard() {
     </div>
   );
 }
-// CODIGO ORIGINAL
