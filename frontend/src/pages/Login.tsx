@@ -29,7 +29,7 @@ function Login() {
     // Datos de ejemplo (en un sistema real, esto se validaría en el servidor)
     const validUsers: ValidUsers = {
       'admin': 'admin123',
-      'empresa': 'password123',
+      'empresa': 'emp123',
       'rh': 'doc2024',
       'proveedor': 'prov2024',
       'cliente': 'cli2024',

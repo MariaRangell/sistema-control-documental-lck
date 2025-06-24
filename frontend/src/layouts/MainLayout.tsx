@@ -7,17 +7,18 @@ import {
   Database, FileClock
 } from 'lucide-react'
 
-type UserRole = 'admin' | 'cliente' | 'proveedor' | 'rh' | 'empresa' | 'auditoria'
+type UserRole = 'admin' | 'empresa' | 'proveedor' | 'rh' | 'cliente' | 'auditoria'
 type UserData = { nombre: string; rol: UserRole }
 type NavItem = { name: string; href: string; icon: React.ElementType }
 type NavByRole = Partial<Record<UserRole, NavItem[]>>
 type SubItem = { name: string; icon: string; href?: string }
 
 const navByRole: NavByRole = {
+  
   admin: [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Documentos', href: '/documents', icon: FileText },
-    { name: 'Usuarios', href: '/users', icon: Users },,
+    { name: 'Usuarios', href: '/users', icon: Users },
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
   empresa: [
@@ -206,7 +207,7 @@ function getSubItems(itemName: string, rol: UserRole): SubItem[] {
       { name: 'Rendimiento', icon: '📊', href: '/auditoria/monitoreo/rendimiento' },
       { name: 'Procesos', icon: '📤', href: '/auditoria/monitoreo/procesos' },
       { name: 'Alertas', icon: '⚠️', href: '/auditoria/monitoreo/alertas' },
-      { name: 'Reportes', icon: '🎯', href: '/auditoria/monitoreo/reportes' }
+      { name: 'Reportes', icon: '🎯', href: '/auditoria/monitoreo/reportes' },
     ],
     'Accesos': [
       { name: 'Conexiones', icon: '⚙️', href: '/auditoria/accesos/conexiones' },
@@ -218,13 +219,13 @@ function getSubItems(itemName: string, rol: UserRole): SubItem[] {
       { name: 'Base de Datos', icon: '🗄️', href: '/auditoria/base-datos/database' },
       { name: 'Administración', icon: '💼', href: '/auditoria/base-datos/admin' },
       { name: 'Reportar', icon: '⚠️', href: '/auditoria/base-datos/reportar' },
-      { name: 'Capacidad', icon: '✅', href: '/auditoria/base-datos/capacidad' }
+      { name: 'Capacidad', icon: '✅', href: '/auditoria/base-datos/capacidad' },
     ],
     'Discrepancias': [
       { name: 'Cargas', icon: '📤', href: '/auditoria/discrepancias/cargas' },
       { name: 'Estatus de los archivos', icon: '✅', href: '/auditoria/discrepancias/estatus' },
       { name: 'Modificaciones', icon: '📋', href: '/auditoria/discrepancias/modificaciones' },
-      { name: 'Avisos', icon: '⚠️', href: '/auditoria/discrepancias/avisos' }
+      { name: 'Avisos', icon: '⚠️', href: '/auditoria/discrepancias/avisos' },
     ]
   }
 
@@ -243,14 +244,10 @@ function getSubItems(itemName: string, rol: UserRole): SubItem[] {
 export default function MainLayout() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [user, setUser] = useState<UserData>({ nombre: '', rol: 'admin' })
+  const [user, setUser] = useState<UserData>({ nombre: '', rol: 'admin'  })
 
   useEffect(() => {
-    // Simulación de localStorage para el ejemplo
-    // En un entorno real, descomenta la línea siguiente:
-    // const userData = localStorage.getItem('user')
-    const userData = JSON.stringify({ nombre: 'Usuario Demo', rol: 'admin' })//-----PENDIENTE DE CAMBIAR
-    
+    const userData = localStorage.getItem('user')
     if (userData) {
       setUser(JSON.parse(userData))
     } else {
@@ -259,7 +256,6 @@ export default function MainLayout() {
   }, [navigate])
 
   const handleLogout = () => {
-    // localStorage.removeItem('user') // Descomenta en entorno real
     navigate('/login')
   }
 
@@ -278,35 +274,31 @@ export default function MainLayout() {
                 const isActive = location.pathname === item.href
                 const subItems = getSubItems(item.name, user.rol)
 
-                if (subItems.length > 0) {
-                  return (
-                    <div key={item.name} className="relative group inline-block text-left">
-                      <button className="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium text-black border-transparent hover:border-gray-300 hover:text-gray-700 focus:outline-none">
-                        <item.icon className="mr-2 h-5 w-5 text-black" />
-                        {item.name}
-                        <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                      <div className="pointer-events-none group-hover:pointer-events-auto absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
-                        <div className="py-1">
-                          {subItems.map((subItem, index) => (
-                            <Link 
-                              key={index} 
-                              to={subItem.href || '#'} 
-                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700"
-                            >
-                              <span className="mr-2">{subItem.icon}</span>
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
+                return subItems.length > 0 ? (
+                  <div key={item.name} className="relative group inline-block text-left">
+                    <button className="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium text-black border-transparent hover:border-gray-300 hover:text-gray-700 focus:outline-none">
+                      <item.icon className="mr-2 h-5 w-5 text-black" />
+                      {item.name}
+                      <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div className="pointer-events-none group-hover:pointer-events-auto absolute left-0 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
+                      <div className="py-1">
+                        {subItems.map((subItem, index) => (
+                          <Link
+                            key={index}
+                            to={subItem.href || '#'}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700"
+                          >
+                            <span className="mr-2">{subItem.icon}</span>
+                            {subItem.name}
+                          </Link>
+                        ))}
                       </div>
                     </div>
-                  )
-                }
-
-                return (
+                  </div>
+                ) : (
                   <Link
                     key={item.name}
                     to={item.href}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, MouseEvent } from 'react';
-import { FileText, Users, Clock, CheckCircle, Building2, UserCheck, BarChart3, Settings, Handshake, Package, DollarSign, FolderOpen, Monitor } from 'lucide-react';
+import { FileText, Users, Clock, CheckCircle, Building2, UserCheck, BarChart3, Settings, Handshake, Package, DollarSign, FolderOpen, Monitor, FileDigitIcon, Scale, FileClock, FolderKey, Database, ArrowLeftRight } from 'lucide-react';
 
 // Tipos para los stats y menú
 interface StatItem {
@@ -75,27 +75,27 @@ const menuItemsByRole: Record<UserRole, MenuItem[]> = {
   ],
   cliente: [
     { id: 'contratos', title: 'Contratos', description: 'Altas/Bajas • Carga/Descarga • Base de Datos • Cumplimiento', icon: FileText, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
-    { id: 'facturas', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
+    { id: 'facturas', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: FileDigitIcon, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
     { id: 'expedientes', title: 'Expedientes', description: 'Acta constitutiva • Constancia de situación fiscal • Servicios', icon: FolderOpen, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
-    { id: 'contabilidad', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: Monitor, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
+    { id: 'contabilidad', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
   ],
   proveedor: [
     { id: 'contratos', title: 'Contratos', description: 'Altas/Bajas • Carga/Descarga • Base de Datos • Cumplimiento', icon: FileText, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
-    { id: 'facturas', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
+    { id: 'facturas', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: FileDigitIcon, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
     { id: 'expedientes', title: 'Expedientes', description: 'Acta constitutiva • Constancia de situación fiscal • Servicios', icon: FolderOpen, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
-    { id: 'contabilidad', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: Monitor, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
+    { id: 'contabilidad', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
   ],
   empresa: [
-    { id: 'finanzas', title: 'Contratos', description: 'Altas/Bajas • Carga/Descarga • Base de Datos • Cumplimiento', icon: FileText, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
-    { id: 'legal', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
-    { id: 'infraestructura', title: 'Expedientes', description: 'Acta constitutiva • Constancia de situación fiscal • Servicios', icon: FolderOpen, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
-    { id: 'facturación', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: Monitor, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
+    { id: 'finanzas', title: 'Finanzas', description: 'Tesorería • SAT • Secretaría de Finanzas • Balances', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
+    { id: 'legal', title: 'Legal', description: ' • Permisos • Lineamientos• SAT• Aviso de Registro REPSE', icon: Scale, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
+    { id: 'infraestructura', title: 'Infraestructura', description: 'Organigrama • Instalaciones • Inventarios • Activos', icon: Building2, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
+    { id: 'facturación', title: 'Facturación', description: 'Altas/Bajas • Carga/Descarga • Base de Datos • Refacturación', icon: FileDigitIcon, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
   ],
   auditoria: [
-    { id: 'contratos', title: 'Contratos', description: 'Altas/Bajas • Carga/Descarga • Base de Datos • Cumplimiento', icon: FileText, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
-    { id: 'facturas', title: 'Facturas', description: 'Carga/Descarga • Administración • Pendientes • Discrepancias', icon: DollarSign, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
-    { id: 'expedientes', title: 'Expedientes', description: 'Acta constitutiva • Constancia de situación fiscal • Servicios', icon: FolderOpen, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
-    { id: 'contabilidad', title: 'Contabilidad', description: 'Balances • Pagos • Pendientes • Impuestos', icon: Monitor, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
+    { id: 'monitoreo', title: 'Monitoreo', description: 'Rendimiento • Alertas • Reportes', icon: FileClock, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
+    { id: 'accesos', title: 'Accesos', description: 'Conexiones • Consultas • Bajas • Restricciones', icon: FolderKey, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-900/80' },
+    { id: 'base de datos', title: 'Base de Datos', description: 'Base de Datos • Administración • Reportar • Capacidad', icon: Database, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-red-700/80' },
+    { id: 'discrepancias', title: 'Discrepancias', description: 'Cargas • Estatus de Archivos • Modificaciones • Avisos', icon: ArrowLeftRight, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
   ]
 };
 
@@ -198,6 +198,8 @@ export default function Dashboard() {
               <option value="rh">Recursos Humanos</option>
               <option value="cliente">Cliente</option>
               <option value="proveedor">Proveedor</option>
+              <option value="auditoria">Auditoria</option>
+              <option value="empresa">Empresa</option>
             </select>
           </div>
         )}
@@ -342,7 +344,7 @@ export default function Dashboard() {
                     { name: 'SAT', icon: '🏛️', href: '/empresa/legal/sat' },
                     { name: 'Aviso de registro REPSE', icon: '📤', href: '/empresa/legal/repse' },
                   ];   
-                  case 'factura':
+                  case 'facturación':
                   return [
                     { name: 'Altas/Bajas', icon: '👥', href: '/empresa/facturacion/altas-bajas' },
                     { name: 'Carga/Descarga', icon: '📤', href: '/empresa/facturacion/carga' },
@@ -351,33 +353,33 @@ export default function Dashboard() {
                   ];
 
                   //SUB-MENU AUDITORIA
-                case 'Monitoreo':
+                case 'monitoreo':
                   return [
                     { name: 'Rendimiento', icon: '📊', href: '/auditoria/monitoreo/rendimiento' },
                     { name: 'Procesos', icon: '📤', href: '/auditoria/monitoreo/procesos' },
                     { name: 'Alertas', icon: '⚠️', href: '/auditoria/monitoreo/alertas' },
-                    { name: 'Reportes', icon: '🎯', href: '/auditoria/monitoreo/reportes' }
+                    { name: 'Reportes', icon: '🎯', href: '/auditoria/monitoreo/reportes' },
                   ];
-                case 'Accesos':
+                case 'accesos':
                   return [
                     { name: 'Conexiones', icon: '⚙️', href: '/auditoria/accesos/conexiones' },
                     { name: 'Consultas', icon: '📋', href: '/auditoria/accesos/consultas' },
                     { name: 'Bajas', icon: '👥', href: '/auditoria/accesos/bajas' },
                     { name: 'Restricciones', icon: '⚠️', href: '/auditoria/accesos/restricciones' },
                   ];           
-                case 'Base de Datos':
+                case 'base de datos':
                   return [
                     { name: 'Base de Datos', icon: '🗄️', href: '/auditoria/base-datos/database' },
                     { name: 'Administración', icon: '💼', href: '/auditoria/base-datos/admin' },
                     { name: 'Reportar', icon: '⚠️', href: '/auditoria/base-datos/reportar' },
-                    { name: 'Capacidad', icon: '✅', href: '/auditoria/base-datos/capacidad' }
+                    { name: 'Capacidad', icon: '✅', href: '/auditoria/base-datos/capacidad' },
                   ];  
-                case 'Discrepancias':
+                case 'discrepancias':
                   return [
                     { name: 'Cargas', icon: '📤', href: '/auditoria/discrepancias/cargas' },
                     { name: 'Estatus de los archivos', icon: '✅', href: '/auditoria/discrepancias/estatus' },
                     { name: 'Modificaciones', icon: '📋', href: '/auditoria/discrepancias/modificaciones' },
-                    { name: 'Avisos', icon: '⚠️', href: '/auditoria/discrepancias/avisos' }
+                    { name: 'Avisos', icon: '⚠️', href: '/auditoria/discrepancias/avisos' },
                   ];  
                 default:
                   return [];  
