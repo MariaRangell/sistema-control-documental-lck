@@ -62,7 +62,7 @@ const menuItemsByRole: Record<UserRole, MenuItem[]> = {
   admin: [
     { id: 'empresa', title: 'Empresa', description: 'Gestión de información corporativa y datos de la organización', icon: Building2, bgGradient: 'bg-gradient-to-br from-gray-800/80 to-gray-900/80' },
     { id: 'auditoria', title: 'Auditoría', description: 'Control y seguimiento de procesos de auditoría interna', icon: BarChart3, bgGradient: 'bg-gradient-to-br from-gray-700/80 to-gray-900/80' },
-    { id: 'personal', title: 'Reursos Humanos', description: 'Gestión de tu información y documentación personal', icon: UserCheck, bgGradient: 'bg-gradient-to-br from-gray-600/80 to-red-700/80' },
+    { id: 'personal', title: 'Recursos Humanos', description: 'Gestión de tu información y documentación personal', icon: UserCheck, bgGradient: 'bg-gradient-to-br from-gray-600/80 to-red-700/80' },
     { id: 'configuracion', title: 'Configuración', description: 'Ajustes del sistema y parámetros de configuración', icon: Settings, bgGradient: 'bg-gradient-to-br from-red-700/80 to-gray-800/80' },
     { id: 'clientes', title: 'Clientes', description: 'Gestión de base de datos y documentación de clientes', icon: Handshake, bgGradient: 'bg-gradient-to-br from-red-600/80 to-red-800/80' },
     { id: 'proveedores', title: 'Proveedores', description: 'Administración de proveedores y documentación comercial', icon: Package, bgGradient: 'bg-gradient-to-br from-red-800/80 to-gray-900/80' },
@@ -381,6 +381,47 @@ export default function Dashboard() {
                     { name: 'Modificaciones', icon: '📋', href: '/auditoria/discrepancias/modificaciones' },
                     { name: 'Avisos', icon: '⚠️', href: '/auditoria/discrepancias/avisos' },
                   ];  
+                  //SUB-MENU ADMINISTRADOR
+                case 'empresa':
+                  return [
+                    { name: 'Finanzas', icon: '💰', href: '/empresa/finanzas' }, 
+                    { name: 'Infraestructura', icon: '🏭', href: '/empresa/infraestructura' },
+                    { name: 'Legal', icon: '🧾', href: '/empresa/legal' },
+                    { name: 'Facturación', icon: '📋', href: '/empresa/facturacion' },
+                  ];
+                case 'auditoria':
+                  return [
+                    { name: 'Monitoreo', icon: '📊', href: '/auditoria/monitoreo' },
+                    { name: 'Accesos', icon: '🔑', href: '/auditoria/accesos' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/auditoria/base-datos' },
+                    { name: 'Discrepancias', icon: '⚠️', href: '/auditoria/discrepancias' },
+                  ];           
+                case 'personal':
+                  return [
+                    { name: 'Contratos', icon: '📋', href: '/rh/contratos' },
+                    { name: 'Expedientes', icon: '📋', href: '/rh/expedientes' },
+                    { name: 'Nómina', icon: '💰', href: '/rh/nomina' },
+                    { name: 'Equipos', icon: '💻', href: '/rh/equipos' },
+                  ];  
+                case 'configuracion':
+                  return [
+                    { name: 'Accesos', icon: '🔑', href: '/configuracion/accesos' },
+                    { name: 'Sistema', icon: '⚙️', href: '/configuracion/sistema' },
+                  ]; 
+                  case 'clientes':
+                  return [
+                    { name: 'Contratos', icon: '👥', href: '/clientes/contratos' },
+                    { name: 'Facturas', icon: '📋', href: '/clientes/facturas' },
+                    { name: 'Expedientes', icon: '💼', href: '/clientes/expedientes' },
+                    { name: 'Contabilidad', icon: '💰', href: '/clientes/contabilidad' },
+                  ];
+                  case 'proveedores':
+                  return [
+                    { name: 'Contratos', icon: '👥', href: '/proveedores/contratos' },
+                    { name: 'Facturas', icon: '📋', href: '/proveedores/facturas' },
+                    { name: 'Expedientes', icon: '💼', href: '/proveedores/expedientes' },
+                    { name: 'Contabilidad', icon: '💰', href: '/proveedores/contabilidad' },
+                  ]
                 default:
                   return [];  
               }
