@@ -1,4 +1,5 @@
 import React, { useState, useEffect, MouseEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FileText, Users, Clock, CheckCircle, Building2, UserCheck, BarChart3, Settings, Handshake, Package, DollarSign, FolderOpen, Monitor, FileDigitIcon, Scale, FileClock, FolderKey, Database, ArrowLeftRight } from 'lucide-react';
 
 // Tipos para los stats y menú
@@ -109,6 +110,7 @@ const FloatingCircles = () => (
 );
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [animatedItems, setAnimatedItems] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>('admin');
@@ -148,7 +150,11 @@ export default function Dashboard() {
     element.style.transform = 'scale(0.95)';
     setTimeout(() => {
       element.style.transform = '';
-      console.log('Navegando a:', section);
+      if (section === 'contratos') {
+        navigate('/menu');
+      } else {
+        console.log('Navegando a:', section);
+      }
     }, 150);
   };
 
@@ -237,10 +243,10 @@ export default function Dashboard() {
                 //SUB-MENU RH
                 case 'contratos':
                   return [
-                    { name: 'Altas/Bajas', icon: '👥', href: '/rh/contratos/altas-bajas' },
-                    { name: 'Carga/Descarga', icon: '📤', href: '/rh/contratos/carga' },
-                    { name: 'Pendientes', icon: '⏳', href: '/rh/contratos/pendientes' },
-                    { name: 'Base de Datos', icon: '🗄️', href: '/rh/contratos/base-datos' },
+                    { name: 'Altas/Bajas', icon: '👥', href: '/documentos/menu' },
+                    { name: 'Carga/Descarga', icon: '📤', href: '/documentos/control' },
+                    { name: 'Pendientes', icon: '⏳', href: '/documentos/control' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/documentos/control' },
                   ];
                 case 'nomina':
                   return [
@@ -267,9 +273,9 @@ export default function Dashboard() {
                 //SUB-MENU CLIENTES
                 case 'contratos':    
                   return [
-                    { name: 'Altas/Bajas', icon: '👥', href: '/cliente/contratos/altas-bajas' },
-                    { name: 'Carga/Descarga', icon: '📤', href: '/cliente/contratos/carga' },
-                    { name: 'Base de Datos', icon: '🗄️', href: '/cliente/contratos/base-datos' },
+                    { name: 'Altas/Bajas', icon: '👥', href: '/menu' },
+                    { name: 'Carga/Descarga', icon: '📤', href: '/dash' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/dash' },
                     { name: 'Cumplimiento', icon: '✅', href: '/cliente/contratos/cumplimiento' }
                   ];
                 case 'facturas':

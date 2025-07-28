@@ -234,7 +234,7 @@ function Login() {
       return (
         <div style={bodyStyle}>
           <div style={containerStyle}>
-            <div style={{ width: '100%', margin: '0 auto 20px', textAlign: 'center' as const }}>
+            <div style={{ width: '100%', margin: '0 auto 20x', textAlign: 'center' as const }}>
               <img
                 src="/logo1.png"
                 alt="Logo LCK Consultores"
