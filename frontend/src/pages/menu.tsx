@@ -19,7 +19,107 @@ interface FormData {
   docDescription: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  role: 'administrador' | 'recursos_humanos' | 'cliente' | 'proveedor' | 'auditoria' | 'empresa';
+  department: string;
+}
+
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: string;
+  role: string;
+}
+
 const DocumentControlSystem: React.FC = () => {
+  // Estado del usuario actual (simulado)
+  const [currentUser, setCurrentUser] = useState<User>({
+    id: 1,
+    name: "Juan Pérez",
+    role: "administrador",
+    department: "Administración"
+  });
+  // 👇 Pega aquí:
+const [showModal, setShowModal] = useState(false);
+const [newDocument, setNewDocument] = useState({
+  title: '',
+  type: '',
+  category: '',
+  status: 'pendiente',
+});
+
+
+  // Definición de menús específicos para cada tipo de usuario
+  const menuConfig: { [key: string]: MenuItem[] } = {
+    administrador: [
+      { id: 'empresa', label: 'Empresa', icon: '🏢', role: 'administrador' },
+      { id: 'auditoria', label: 'Auditoría', icon: '🔍', role: 'administrador' },
+      { id: 'recursos_humanos', label: 'Recursos Humanos', icon: '👥', role: 'administrador' },
+      { id: 'clientes', label: 'Clientes', icon: '👤', role: 'administrador' },
+      { id: 'proveedores', label: 'Proveedores', icon: '🛒', role: 'administrador' }
+    ],
+    recursos_humanos: [
+      { id: 'contratos_rh', label: 'Contratos', icon: '📋', role: 'recursos_humanos' },
+      { id: 'nomina', label: 'Nómina', icon: '💰', role: 'recursos_humanos' },
+      { id: 'expedientes_rh', label: 'Expedientes', icon: '📁', role: 'recursos_humanos' },
+      { id: 'equipos', label: 'Equipos', icon: '👨‍💼', role: 'recursos_humanos' }
+    ],
+    cliente: [
+      { id: 'contratos_cliente', label: 'Contratos', icon: '📄', role: 'cliente' },
+      { id: 'facturas_cliente', label: 'Facturas', icon: '🧾', role: 'cliente' },
+      { id: 'expedientes_cliente', label: 'Expedientes', icon: '📂', role: 'cliente' },
+      { id: 'contabilidad_cliente', label: 'Contabilidad', icon: '📊', role: 'cliente' }
+    ],
+    proveedor: [
+      { id: 'contratos_proveedor', label: 'Contratos', icon: '📝', role: 'proveedor' },
+      { id: 'facturas_proveedor', label: 'Facturas', icon: '💸', role: 'proveedor' },
+      { id: 'expedientes_proveedor', label: 'Expedientes', icon: '🗂️', role: 'proveedor' },
+      { id: 'contabilidad_proveedor', label: 'Contabilidad', icon: '📈', role: 'proveedor' }
+    ],
+    auditoria: [
+      { id: 'monitoreo', label: 'Monitoreo', icon: '📡', role: 'auditoria' },
+      { id: 'accesos', label: 'Accesos', icon: '🔐', role: 'auditoria' },
+      { id: 'base_datos', label: 'Base de Datos', icon: '🗄️', role: 'auditoria' },
+      { id: 'discrepancias', label: 'Discrepancias', icon: '⚠️', role: 'auditoria' }
+    ],
+    empresa: [
+      { id: 'finanzas', label: 'Finanzas', icon: '💼', role: 'empresa' },
+      { id: 'legal', label: 'Legal', icon: '⚖️', role: 'empresa' },
+      { id: 'infraestructura', label: 'Infraestructura', icon: '🏗️', role: 'empresa' },
+      { id: 'facturacion', label: 'Facturación', icon: '🧮', role: 'empresa' }
+    ]
+  };
+
+  // Estado para el menú activo
+  const [activeMenuItem, setActiveMenuItem] = useState<string>('');
+
+  // Función para obtener el menú del usuario actual
+  const getCurrentUserMenu = () => {
+    return menuConfig[currentUser.role] || [];
+  };
+
+  // Función para cambiar de usuario (para demostración)
+  const switchUser = (role: User['role']) => {
+    const userNames: { [key: string]: string } = {
+      administrador: "Juan Pérez - Administrador",
+      recursos_humanos: "María García - RRHH",
+      cliente: "Carlos López - Cliente",
+      proveedor: "Ana Martínez - Proveedor",
+      auditoria: "Pedro Sánchez - Auditor",
+      empresa: "Lucía Fernández - Empresa"
+    };
+
+    setCurrentUser({
+      id: Math.floor(Math.random() * 1000),
+      name: userNames[role] || "Usuario",
+      role: role,
+      department: role.charAt(0).toUpperCase() + role.slice(1).replace('_', ' ')
+    });
+    setActiveMenuItem('');
+  };
+
   const [documents, setDocuments] = useState<Document[]>([
     {
       id: 1,
@@ -667,6 +767,20 @@ const DocumentControlSystem: React.FC = () => {
               <option value="revision">En revisión</option>
               <option value="archivado">Archivado</option>
             </select>
+            {/* Selector de usuario para demostración */}
+            <select 
+              className="filter-select" 
+              value={currentUser.role}
+              onChange={(e) => switchUser(e.target.value as User['role'])}
+              style={{ backgroundColor: '#DC143C', color: 'white', fontWeight: 'bold' }}
+            >
+              <option value="administrador">👑 Administrador</option>
+              <option value="recursos_humanos">👥 Recursos Humanos</option>
+              <option value="cliente">👤 Cliente</option>
+              <option value="proveedor">🛒 Proveedor</option>
+              <option value="auditoria">🔍 Auditoría</option>
+              <option value="empresa">🏢 Empresa</option>
+            </select>
           </div>
           <button className="btn btn-primary" onClick={openModal}>
             ➕ Nuevo Documento
@@ -675,22 +789,37 @@ const DocumentControlSystem: React.FC = () => {
 
         <div className="main-content">
           <aside className="sidebar">
-            <h3>📂 Categorías</h3>
+            <div style={{ marginBottom: '20px', textAlign: 'center', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '10px', border: '2px solid #DC143C' }}>
+              <div style={{ fontSize: '14px', color: '#DC143C', fontWeight: 'bold' }}>Usuario Actual:</div>
+              <div style={{ fontSize: '16px', color: '#333', marginTop: '5px' }}>{currentUser.name}</div>
+            </div>
+            
+            <h3>📂 Módulos Disponibles</h3>
             <ul>
-              <li><a href="#" className="active">📋 Todos los documentos</a></li>
-              <li><a href="#">🏢 Empresa</a></li>
-              <li><a href="#">👨 Recursos Humanos</a></li>
-              <li><a href="#">🔍 Auditoria</a></li>
-              <li><a href="#">👥 Clientes</a></li>
-              <li><a href="#">🛒 Proveedores</a></li>
+              {getCurrentUserMenu().map((item) => (
+                <li key={item.id}>
+                  <a 
+                    href="#" 
+                    className={activeMenuItem === item.id ? 'active' : ''}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveMenuItem(item.id);
+                    }}
+                  >
+                    {item.icon} {item.label}
+                  </a>
+                </li>
+              ))}
             </ul>
 
             <h3>⚡ Acciones rápidas</h3>
             <ul>
-              <li><a href="#">📤 Subir documento</a></li>
-              <li><a href="#">🔄 Sincronizar</a></li>
-              <li><a href="#">📊 Generar reporte</a></li>
-              <li><a href="#">⚙️ Configuración</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); openModal(); }}>📤 Subir documento</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()}>🔄 Sincronizar</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()}>📊 Generar reporte</a></li>
+              {currentUser.role === 'administrador' && (
+                <li><a href="#" onClick={(e) => e.preventDefault()}>⚙️ Configuración</a></li>
+              )}
             </ul>
           </aside>
 
@@ -757,86 +886,59 @@ const DocumentControlSystem: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal para nuevo documento */}
-      <div className="modal" onClick={handleModalClick}>
-        <div className="modal-content">
-          <span className="close" onClick={closeModal}>&times;</span>
-          <h2>Nuevo Documento</h2>
-          <form onSubmit={handleFormSubmit}>
-            <div className="form-group">
-              <label htmlFor="docTitle">Título del documento:</label>
-              <input 
-                type="text" 
-                id="docTitle" 
-                name="docTitle" 
-                value={formData.docTitle}
-                onChange={handleFormChange}
-                required 
-              />
+      {/* Modal para agregar nuevo documento */}
+      {showModal && (
+        <div className="modal" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Nuevo Documento</h2>
+            <input
+              type="text"
+              placeholder="Título del documento"
+              value={newDocument.title}
+              onChange={(e) =>
+                setNewDocument({ ...newDocument, title: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Tipo"
+              value={newDocument.type}
+              onChange={(e) =>
+                setNewDocument({ ...newDocument, type: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Categoría"
+              value={newDocument.category}
+              onChange={(e) =>
+                setNewDocument({ ...newDocument, category: e.target.value })
+              }
+            />
+            <select
+              value={newDocument.status}
+              onChange={(e) =>
+                setNewDocument({ ...newDocument, status: e.target.value })
+              }
+            >
+              <option value="aprobado">Aprobado</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="rechazado">Rechazado</option>
+            </select>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "0.5rem",
+                marginTop: "1rem",
+              }}
+            >
+              <button onClick={addDocument}>Guardar</button>
+              <button onClick={() => setShowModal(false)}>Cancelar</button>
             </div>
-            <div className="form-group">
-              <label htmlFor="docType">Tipo:</label>
-              <select 
-                id="docType" 
-                name="docType" 
-                value={formData.docType}
-                onChange={handleFormChange}
-                required
-              >
-                <option value="">Seleccionar tipo</option>
-                <option value="pdf">PDF</option>
-                <option value="word">Word</option>
-                <option value="excel">Excel</option>
-                <option value="imagen">Imagen</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="docCategory">Categoría:</label>
-              <select 
-                id="docCategory" 
-                name="docCategory" 
-                value={formData.docCategory}
-                onChange={handleFormChange}
-                required
-              >
-                <option value="">Seleccionar categoría</option>
-                <option value="informes">Informes</option>
-                <option value="contratos">Contratos</option>
-                <option value="politicas">Políticas</option>
-                <option value="procedimientos">Procedimientos</option>
-                <option value="formularios">Formularios</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="docDescription">Descripción:</label>
-              <textarea 
-                id="docDescription" 
-                name="docDescription" 
-                value={formData.docDescription}
-                onChange={handleFormChange}
-                rows={3}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="docFile">Archivo:</label>
-              <input 
-                type="file" 
-                id="docFile" 
-                name="docFile" 
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png,.gif" 
-              />
-            </div>
-            <div style={{ textAlign: 'right', marginTop: '30px' }}>
-              <button type="button" className="btn btn-secondary" onClick={closeModal}>
-                Cancelar
-              </button>
-              <button type="submit" className="btn btn-primary" style={{ marginLeft: '10px' }}>
-                Guardar
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
