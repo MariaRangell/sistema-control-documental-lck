@@ -64,6 +64,61 @@ const DocumentControlSystem: React.FC<DocumentControlSystemProps> = ({ user }) =
       role: ['cliente'] // Rol por defecto si no hay usuario autenticado
     };
   });
+  
+// 1. PRIMERO: Agregar la configuración de categorías por rol (al inicio de tu componente)
+const categoriesByRole = {
+  cliente: [
+    { id: 'contratos', label: 'Contratos' },
+    { id: 'facturas', label: 'Facturas' },
+    { id: 'expedientes', label: 'Expedientes' },
+    { id: 'contabilidad', label: 'Contabilidad' },
+  ],
+  proveedor: [
+    { id: 'contratos', label: 'Contratos' },
+    { id: 'facturas', label: 'Facturas' },
+    { id: 'expedientes', label: 'Expedientes' },
+    { id: 'contabilidad', label: 'Contabilidad' },
+  ],
+  empresa: [
+    { id: 'finanzas', label: 'Finanzas' },
+    { id: 'legal', label: 'Legal' },
+    { id: 'infraestructura', label: 'Infraestructura' },
+    { id: 'facturacion', label: 'Facturación' },
+  ],
+  admin: [
+    { id: 'contratos', label: 'Contratos' },
+    { id: 'facturas', label: 'Facturas' },
+    { id: 'expedientes', label: 'Expedientes' },
+    { id: 'contabilidad', label: 'Contabilidad' },
+    { id: 'finanzas', label: 'Finanzas' },
+    { id: 'legal', label: 'Legal' },
+    { id: 'infraestructura', label: 'Infraestructura' },
+    { id: 'facturacion', label: 'Facturación' },
+    { id: 'contratos', label: 'Contratos' },
+    { id: 'equipos', label: 'Equipos' },
+    { id: 'expedientes', label: 'Expedientes' },
+    { id: 'nominas', label: 'Nóminas' },
+  ],
+  rh: [
+    { id: 'contratos', label: 'Contratos' },
+    { id: 'equipos', label: 'Equipos' },
+    { id: 'expedientes', label: 'Expedientes' },
+    { id: 'nominas', label: 'Nóminas' },
+  ],
+  auditoria: [
+    { id: 'monitoreo', label: 'Monitoreo' },
+    { id: 'accesos', label: 'Accesos' },
+    { id: 'baase de datos', label: 'Base de Datos' },
+    { id: 'discrepancias', label: 'Discrepancias' },
+  ]
+};
+// 🆕 AGREGAR ESTA FUNCIÓN (después de categoriesByRole)
+  const getAvailableCategories = () => {
+    const userRole = currentUser.role[0]; // Obtiene el rol actual del usuario
+    return categoriesByRole[userRole] || []; // Devuelve las categorías o array vacío
+  };
+
+  // ✅ Aquí continúan tus handlers existentes (handleSearchChange, etc.)
 
   // Actualizar el estado cuando cambie el usuario o cuando se actualice el localStorage
   useEffect(() => {
@@ -812,7 +867,7 @@ const menuCategories: MenuItem[] = [
 
         <div className="main-content">
           <aside className="sidebar">
-            <h3>📂 Categorías</h3>
+            <h3>🔖 Categorías</h3>
             <ul>
               {menuCategories
                 .filter(item => item.roles.some(role => currentUser.role[0] === role))
@@ -944,20 +999,20 @@ const menuCategories: MenuItem[] = [
             </div>
             <div className="form-group">
               <label htmlFor="docCategory">Categoría:</label>
-              <select 
-                id="docCategory" 
-                name="docCategory" 
-                value={formData.docCategory}
-                onChange={handleFormChange}
-                required
-              >
-                <option value="">Seleccionar categoría</option>
-                <option value="informes">Informes</option>
-                <option value="contratos">Contratos</option>
-                <option value="politicas">Políticas</option>
-                <option value="procedimientos">Procedimientos</option>
-                <option value="formularios">Formularios</option>
-              </select>
+             <select 
+               id="docCategory" 
+               name="docCategory" 
+               value={formData.docCategory}
+               onChange={handleFormChange}
+   required
+>
+  <option value="">Seleccionar categoría</option>
+  {getAvailableCategories().map(category => (
+    <option key={category.id} value={category.id}>
+      {category.label}
+    </option>
+  ))}
+</select>
             </div>
             <div className="form-group">
               <label htmlFor="docDescription">Descripción:</label>
