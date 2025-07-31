@@ -1,6 +1,20 @@
 import React, { useState, FormEvent, useEffect } from 'react';
 
 // TypeScript interfaces
+interface User {
+  id: number;
+  username: string;
+  role: ('admin' | 'rh' | 'proveedor' | 'cliente' | 'auditoria' | 'empresa')[];
+}
+
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: string;
+  link: string;
+  roles: ('admin' | 'rh' | 'proveedor' | 'cliente' | 'auditoria' | 'empresa')[];
+}
+
 interface Document {
   id: number;
   title: string;
@@ -21,104 +35,122 @@ interface FormData {
 
 interface User {
   id: number;
-  name: string;
-  role: 'administrador' | 'recursos_humanos' | 'cliente' | 'proveedor' | 'auditoria' | 'empresa';
-  department: string;
+  username: string;
+  role: ('admin' | 'rh' | 'proveedor' | 'cliente' | 'auditoria' | 'empresa')[];
 }
 
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: string;
-  role: string;
+interface DocumentControlSystemProps {
+  user?: {
+    id: number;
+    username: string;
+    role: ('admin' | 'rh' | 'proveedor' | 'cliente' | 'auditoria' | 'empresa')[];
+  };
 }
 
-const DocumentControlSystem: React.FC = () => {
-  // Estado del usuario actual (simulado)
-  const [currentUser, setCurrentUser] = useState<User>({
-    id: 1,
-    name: "Juan Pérez",
-    role: "administrador",
-    department: "Administración"
+const DocumentControlSystem: React.FC<DocumentControlSystemProps> = ({ user }) => {
+  const [currentUser, setCurrentUser] = useState<User>(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      return {
+        id: 0,
+        username: userData.nombre,
+        role: [userData.rol] // Convertir el rol string a array
+      };
+    }
+    return {
+      id: 0,
+      username: 'Invitado',
+      role: ['cliente'] // Rol por defecto si no hay usuario autenticado
+    };
   });
-  // 👇 Pega aquí:
-const [showModal, setShowModal] = useState(false);
-const [newDocument, setNewDocument] = useState({
-  title: '',
-  type: '',
-  category: '',
-  status: 'pendiente',
-});
 
-
-  // Definición de menús específicos para cada tipo de usuario
-  const menuConfig: { [key: string]: MenuItem[] } = {
-    administrador: [
-      { id: 'empresa', label: 'Empresa', icon: '🏢', role: 'administrador' },
-      { id: 'auditoria', label: 'Auditoría', icon: '🔍', role: 'administrador' },
-      { id: 'recursos_humanos', label: 'Recursos Humanos', icon: '👥', role: 'administrador' },
-      { id: 'clientes', label: 'Clientes', icon: '👤', role: 'administrador' },
-      { id: 'proveedores', label: 'Proveedores', icon: '🛒', role: 'administrador' }
-    ],
-    recursos_humanos: [
-      { id: 'contratos_rh', label: 'Contratos', icon: '📋', role: 'recursos_humanos' },
-      { id: 'nomina', label: 'Nómina', icon: '💰', role: 'recursos_humanos' },
-      { id: 'expedientes_rh', label: 'Expedientes', icon: '📁', role: 'recursos_humanos' },
-      { id: 'equipos', label: 'Equipos', icon: '👨‍💼', role: 'recursos_humanos' }
-    ],
-    cliente: [
-      { id: 'contratos_cliente', label: 'Contratos', icon: '📄', role: 'cliente' },
-      { id: 'facturas_cliente', label: 'Facturas', icon: '🧾', role: 'cliente' },
-      { id: 'expedientes_cliente', label: 'Expedientes', icon: '📂', role: 'cliente' },
-      { id: 'contabilidad_cliente', label: 'Contabilidad', icon: '📊', role: 'cliente' }
-    ],
-    proveedor: [
-      { id: 'contratos_proveedor', label: 'Contratos', icon: '📝', role: 'proveedor' },
-      { id: 'facturas_proveedor', label: 'Facturas', icon: '💸', role: 'proveedor' },
-      { id: 'expedientes_proveedor', label: 'Expedientes', icon: '🗂️', role: 'proveedor' },
-      { id: 'contabilidad_proveedor', label: 'Contabilidad', icon: '📈', role: 'proveedor' }
-    ],
-    auditoria: [
-      { id: 'monitoreo', label: 'Monitoreo', icon: '📡', role: 'auditoria' },
-      { id: 'accesos', label: 'Accesos', icon: '🔐', role: 'auditoria' },
-      { id: 'base_datos', label: 'Base de Datos', icon: '🗄️', role: 'auditoria' },
-      { id: 'discrepancias', label: 'Discrepancias', icon: '⚠️', role: 'auditoria' }
-    ],
-    empresa: [
-      { id: 'finanzas', label: 'Finanzas', icon: '💼', role: 'empresa' },
-      { id: 'legal', label: 'Legal', icon: '⚖️', role: 'empresa' },
-      { id: 'infraestructura', label: 'Infraestructura', icon: '🏗️', role: 'empresa' },
-      { id: 'facturacion', label: 'Facturación', icon: '🧮', role: 'empresa' }
-    ]
-  };
-
-  // Estado para el menú activo
-  const [activeMenuItem, setActiveMenuItem] = useState<string>('');
-
-  // Función para obtener el menú del usuario actual
-  const getCurrentUserMenu = () => {
-    return menuConfig[currentUser.role] || [];
-  };
-
-  // Función para cambiar de usuario (para demostración)
-  const switchUser = (role: User['role']) => {
-    const userNames: { [key: string]: string } = {
-      administrador: "Juan Pérez - Administrador",
-      recursos_humanos: "María García - RRHH",
-      cliente: "Carlos López - Cliente",
-      proveedor: "Ana Martínez - Proveedor",
-      auditoria: "Pedro Sánchez - Auditor",
-      empresa: "Lucía Fernández - Empresa"
+  // Actualizar el estado cuando cambie el usuario o cuando se actualice el localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        setCurrentUser({
+          id: 0,
+          username: userData.nombre,
+          role: [userData.rol]
+        });
+      }
     };
 
-    setCurrentUser({
-      id: Math.floor(Math.random() * 1000),
-      name: userNames[role] || "Usuario",
-      role: role,
-      department: role.charAt(0).toUpperCase() + role.slice(1).replace('_', ' ')
-    });
-    setActiveMenuItem('');
-  };
+    // Escuchar cambios en el localStorage
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Si se proporciona un usuario como prop, usarlo
+    if (user) {
+      setCurrentUser(user);
+    }
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [user]);
+
+const adminMenu: MenuItem[] = [
+  { id: 'admin-rh', label: 'RH', icon: '🧑‍💼', link: '#', roles: ['admin'] },
+  { id: 'admin-empresa', label: 'Empresa', icon: '🏢', link: '#', roles: ['admin'] },
+  { id: 'admin-auditoria', label: 'Auditoría', icon: '🕵️‍♂️', link: '#', roles: ['admin'] },
+  { id: 'admin-proveedores', label: 'Proveedores', icon: '🚚', link: '#', roles: ['admin'] },
+  { id: 'admin-clientes', label: 'Clientes', icon: '🤝', link: '#', roles: ['admin'] }
+];
+
+const rhMenu: MenuItem[] = [
+  { id: 'rh-contratos', label: 'contratos', icon: '👥', link: '#', roles: ['rh'] },
+  { id: 'rh-nomina', label: 'Nómina', icon: '💰', link: '#', roles: ['rh'] },
+  { id: 'rh-expedientes', label: 'Expedientes', icon: '🗂️', link: '#', roles: ['rh'] },
+  { id: 'rh-equipos', label: 'Equipos', icon: '💻', link: '#', roles: ['rh'] },
+];
+
+const clienteMenu: MenuItem[] = [
+  { id: 'cliente-contratos', label: 'Contratos', icon: '👥', link: '#', roles: ['cliente'] },
+  { id: 'cliente-facturas', label: 'Facturas', icon: '💰', link: '#', roles: ['cliente'] },
+  { id: 'cliente-contabilidad', label: 'Contabilidad', icon: '📈', link: '#', roles: ['cliente'] },
+  { id: 'cliente-expedientes', label: 'Expedientes', icon: '🗂️', link: '#', roles: ['cliente'] },
+];
+
+const proveedorMenu: MenuItem[] = [
+  { id: 'proveedor-contratos', label: 'Contratos', icon: '👥', link: '#', roles: ['proveedor'] },
+  { id: 'proveedor-facturas', label: 'Facturas', icon: '💰', link: '#', roles: ['proveedor'] },
+  { id: 'proveedor-contabilidad', label: 'Contabilidad', icon: '📈', link: '#', roles: ['proveedor'] },
+  { id: 'proveedor-expedientes', label: 'Expedientes', icon: '🗂️', link: '#', roles: ['proveedor'] },
+];
+
+const auditoriaMenu: MenuItem[] = [
+  { id: 'auditoria-monitoreo', label: 'Monitoreo', icon: '📈', link: '#', roles: ['auditoria'] },
+  { id: 'auditoria-accesos', label: 'Accesos', icon: '🔑', link: '#', roles: ['auditoria'] },
+  { id: 'auditoria-base de datos', label: 'Base de datos', icon: '🗄️', link: '#', roles: ['auditoria'] },
+  { id: 'auditoria-discrepancias', label: 'Discrepancias', icon: '⚠️', link: '#', roles: ['auditoria'] },
+];
+
+const empresaMenu: MenuItem[] = [
+  { id: 'empresa-finanzas', label: 'Finanzas', icon: '💰', link: '#', roles: ['empresa'] },
+  { id: 'empresa-legal', label: 'Legal', icon: '⚖️', link: '#', roles: ['empresa'] },
+  { id: 'empresa-infraestructura', label: 'Infraestructura', icon: '🏭', link: '#', roles: ['empresa'] },
+  { id: 'empresa-facturacion', label: 'Facturación', icon: '💰', link: '#', roles: ['empresa'] },
+];
+
+const menuCategories: MenuItem[] = [
+  ...adminMenu,
+  ...rhMenu,
+  ...clienteMenu,
+  ...proveedorMenu,
+  ...auditoriaMenu,
+  ...empresaMenu
+];
+
+
+  const quickActions: MenuItem[] = [
+    { id: 'subir', label: 'Subir documento', icon: '📤', link: '#', roles: ['admin', 'rh', 'empresa', 'proveedor', 'auditoria', 'cliente'] },
+    { id: 'sincronizar', label: 'Sincronizar', icon: '🔄', link: '#', roles: ['admin', 'rh', 'empresa', 'proveedor', 'auditoria', 'cliente'] },
+    { id: 'reporte', label: 'Generar reporte', icon: '📊', link: '#', roles: ['admin', 'rh', 'empresa', 'proveedor', 'auditoria', 'cliente'] },
+    { id: 'configuracion', label: 'Configuración', icon: '⚙️', link: '#', roles: ['admin', 'rh', 'empresa', 'proveedor', 'auditoria', 'cliente'] }
+  ];
 
   const [documents, setDocuments] = useState<Document[]>([
     {
@@ -188,6 +220,7 @@ const [newDocument, setNewDocument] = useState({
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currentCategory, setCurrentCategory] = useState<string>('todos');
   const [formData, setFormData] = useState<FormData>({
     docTitle: '',
     docType: '',
@@ -202,12 +235,13 @@ const [newDocument, setNewDocument] = useState({
                           doc.author.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = !typeFilter || doc.type === typeFilter;
       const matchesStatus = !statusFilter || doc.status === statusFilter;
+      const matchesCategory = currentCategory === 'todos' || doc.category === currentCategory;
 
-      return matchesSearch && matchesType && matchesStatus;
+      return matchesSearch && matchesType && matchesStatus && matchesCategory;
     });
 
     setFilteredDocuments(filtered);
-  }, [documents, searchTerm, typeFilter, statusFilter]);
+  }, [documents, searchTerm, typeFilter, statusFilter, currentCategory]);
 
   // Helper functions
   const getDocumentIcon = (type: string): string => {
@@ -767,59 +801,48 @@ const [newDocument, setNewDocument] = useState({
               <option value="revision">En revisión</option>
               <option value="archivado">Archivado</option>
             </select>
-            {/* Selector de usuario para demostración */}
-            <select 
-              className="filter-select" 
-              value={currentUser.role}
-              onChange={(e) => switchUser(e.target.value as User['role'])}
-              style={{ backgroundColor: '#DC143C', color: 'white', fontWeight: 'bold' }}
-            >
-              <option value="administrador">👑 Administrador</option>
-              <option value="recursos_humanos">👥 Recursos Humanos</option>
-              <option value="cliente">👤 Cliente</option>
-              <option value="proveedor">🛒 Proveedor</option>
-              <option value="auditoria">🔍 Auditoría</option>
-              <option value="empresa">🏢 Empresa</option>
-            </select>
           </div>
-          <button className="btn btn-primary" onClick={openModal}>
-            ➕ Nuevo Documento
-          </button>
+          {['admin', 'rh', 'empresa', 'proveedor', 'auditoria', 'cliente'].includes(currentUser.role[0]) && (
+  <button className="btn btn-primary" onClick={openModal}>
+    ➕ Nuevo Documento
+  </button>
+)}
+
         </div>
 
         <div className="main-content">
           <aside className="sidebar">
-            <div style={{ marginBottom: '20px', textAlign: 'center', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '10px', border: '2px solid #DC143C' }}>
-              <div style={{ fontSize: '14px', color: '#DC143C', fontWeight: 'bold' }}>Usuario Actual:</div>
-              <div style={{ fontSize: '16px', color: '#333', marginTop: '5px' }}>{currentUser.name}</div>
-            </div>
-            
-            <h3>📂 Módulos Disponibles</h3>
+            <h3>📂 Categorías</h3>
             <ul>
-              {getCurrentUserMenu().map((item) => (
-                <li key={item.id}>
-                  <a 
-                    href="#" 
-                    className={activeMenuItem === item.id ? 'active' : ''}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveMenuItem(item.id);
-                    }}
-                  >
-                    {item.icon} {item.label}
-                  </a>
-                </li>
-              ))}
+              {menuCategories
+                .filter(item => item.roles.some(role => currentUser.role[0] === role))
+                .map(item => (
+                  <li key={item.id}>
+                    <a 
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentCategory(item.id);
+                      }}
+                      className={item.id === currentCategory ? 'active' : ''}
+                    >
+                      {item.icon} {item.label}
+                    </a>
+                  </li>
+                ))}
             </ul>
 
             <h3>⚡ Acciones rápidas</h3>
             <ul>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); openModal(); }}>📤 Subir documento</a></li>
-              <li><a href="#" onClick={(e) => e.preventDefault()}>🔄 Sincronizar</a></li>
-              <li><a href="#" onClick={(e) => e.preventDefault()}>📊 Generar reporte</a></li>
-              {currentUser.role === 'administrador' && (
-                <li><a href="#" onClick={(e) => e.preventDefault()}>⚙️ Configuración</a></li>
-              )}
+              {quickActions
+                .filter(item => item.roles.includes(currentUser.role[0]))
+                .map(item => (
+                  <li key={item.id}>
+                    <a href="#" onClick={(e) => e.preventDefault()}>
+                      {item.icon} {item.label}
+                    </a>
+                  </li>
+                ))}
             </ul>
           </aside>
 
@@ -864,7 +887,7 @@ const [newDocument, setNewDocument] = useState({
                       className="btn btn-primary btn-small" 
                       onClick={() => viewDocument(doc.id)}
                     >
-                      👁️ Ver
+                      📑 Ver
                     </button>
                     <button 
                       className="btn btn-secondary btn-small" 
@@ -886,59 +909,86 @@ const [newDocument, setNewDocument] = useState({
         </div>
       </div>
 
-      {/* Modal para agregar nuevo documento */}
-      {showModal && (
-        <div className="modal" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Nuevo Documento</h2>
-            <input
-              type="text"
-              placeholder="Título del documento"
-              value={newDocument.title}
-              onChange={(e) =>
-                setNewDocument({ ...newDocument, title: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Tipo"
-              value={newDocument.type}
-              onChange={(e) =>
-                setNewDocument({ ...newDocument, type: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Categoría"
-              value={newDocument.category}
-              onChange={(e) =>
-                setNewDocument({ ...newDocument, category: e.target.value })
-              }
-            />
-            <select
-              value={newDocument.status}
-              onChange={(e) =>
-                setNewDocument({ ...newDocument, status: e.target.value })
-              }
-            >
-              <option value="aprobado">Aprobado</option>
-              <option value="pendiente">Pendiente</option>
-              <option value="rechazado">Rechazado</option>
-            </select>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "0.5rem",
-                marginTop: "1rem",
-              }}
-            >
-              <button onClick={addDocument}>Guardar</button>
-              <button onClick={() => setShowModal(false)}>Cancelar</button>
+      {/* Modal para nuevo documento */}
+      <div className="modal" onClick={handleModalClick}>
+        <div className="modal-content">
+          <span className="close" onClick={closeModal}>&times;</span>
+          <h2>Nuevo Documento</h2>
+          <form onSubmit={handleFormSubmit}>
+            <div className="form-group">
+              <label htmlFor="docTitle">Título del documento:</label>
+              <input 
+                type="text" 
+                id="docTitle" 
+                name="docTitle" 
+                value={formData.docTitle}
+                onChange={handleFormChange}
+                required 
+              />
             </div>
-          </div>
+            <div className="form-group">
+              <label htmlFor="docType">Tipo:</label>
+              <select 
+                id="docType" 
+                name="docType" 
+                value={formData.docType}
+                onChange={handleFormChange}
+                required
+              >
+                <option value="">Seleccionar tipo</option>
+                <option value="pdf">PDF</option>
+                <option value="word">Word</option>
+                <option value="excel">Excel</option>
+                <option value="imagen">Imagen</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="docCategory">Categoría:</label>
+              <select 
+                id="docCategory" 
+                name="docCategory" 
+                value={formData.docCategory}
+                onChange={handleFormChange}
+                required
+              >
+                <option value="">Seleccionar categoría</option>
+                <option value="informes">Informes</option>
+                <option value="contratos">Contratos</option>
+                <option value="politicas">Políticas</option>
+                <option value="procedimientos">Procedimientos</option>
+                <option value="formularios">Formularios</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="docDescription">Descripción:</label>
+              <textarea 
+                id="docDescription" 
+                name="docDescription" 
+                value={formData.docDescription}
+                onChange={handleFormChange}
+                rows={3}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="docFile">Archivo:</label>
+              <input 
+                type="file" 
+                id="docFile" 
+                name="docFile" 
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png,.gif" 
+              />
+            </div>
+            <div style={{ textAlign: 'right', marginTop: '30px' }}>
+              <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn btn-primary" style={{ marginLeft: '10px' }}>
+                Guardar
+              </button>
+            </div>
+          </form>
         </div>
-      )}
+      </div>
     </>
   );
 };

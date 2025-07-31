@@ -14,8 +14,11 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Ruta raíz e inicio en Login */}
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
 
+        {/* Rutas protegidas bajo MainLayout */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/documents" element={<Documents />} />
@@ -25,7 +28,6 @@ function App() {
           <Route path="/documentos/:section" element={<Dash />} />
           <Route path="/documentos" element={<Dash />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/" element={<DocumentControl />} />
         </Route>
       </Routes>
     </Router>
@@ -33,3 +35,4 @@ function App() {
 }
 
 export default App;
+

@@ -145,16 +145,13 @@ export default function Dashboard() {
     setActualRole(newRole);
   };
 
-  const navigateTo = (section: string, event: MouseEvent<HTMLDivElement>) => {
+  const navigateTo = (section: string, href: string, event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation(); // Prevent event bubbling
     const element = event.currentTarget;
     element.style.transform = 'scale(0.95)';
     setTimeout(() => {
       element.style.transform = '';
-      if (section === 'contratos') {
-        navigate('/menu');
-      } else {
-        console.log('Navegando a:', section);
-      }
+      navigate(href);
     }, 150);
   };
 
@@ -243,171 +240,171 @@ export default function Dashboard() {
                 //SUB-MENU RH
                 case 'contratos':
                   return [
-                    { name: 'Altas/Bajas', icon: '👥', href: '/documentos/menu' },
-                    { name: 'Carga/Descarga', icon: '📤', href: '/documentos/control' },
-                    { name: 'Pendientes', icon: '⏳', href: '/documentos/control' },
-                    { name: 'Base de Datos', icon: '🗄️', href: '/documentos/control' },
+                    { name: 'Altas/Bajas', icon: '👥', href: '/menu' },
+                    { name: 'Carga/Descarga', icon: '📤', href: '/menu' },
+                    { name: 'Pendientes', icon: '⏳', href: '/menu' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/menu' },
                   ];
                 case 'nomina':
                   return [
-                    { name: 'Carga/Descarga', icon: '📤', href: '/rh/nomina/carga' },
-                    { name: 'Administración', icon: '⚙️', href: '/rh/nomina/admin' },
-                    { name: 'Recibos', icon: '🧾', href: '/rh/nomina/recibos' },
-                    { name: 'Discrepancias', icon: '⚠️', href: '/rh/nomina/discrepancias' },
+                    { name: 'Carga/Descarga', icon: '📤', href: '/menu' },
+                    { name: 'Administración', icon: '⚙️', href: '/menu' },
+                    { name: 'Recibos', icon: '🧾', href: '/menu' },
+                    { name: 'Discrepancias', icon: '⚠️', href: '/menu' },
                   ];
                 case 'expedientes':
                   return [
-                    { name: 'Organigrama', icon: '🏢', href: '/rh/expedientes/organigrama' },
-                    { name: 'Instalaciones', icon: '🏭', href: '/rh/expedientes/instalaciones' },
-                    { name: 'Inventarios', icon: '📋', href: '/rh/expedientes/inventarios' },
-                    { name: 'Activos', icon: '💼', href: '/rh/expedientes/activos' },
+                    { name: 'Organigrama', icon: '🏢', href: '/menu' },
+                    { name: 'Instalaciones', icon: '🏭', href: '/menu' },
+                    { name: 'Inventarios', icon: '📋', href: '/menu' },
+                    { name: 'Activos', icon: '💼', href: '/menu' },
                   ];
                 case 'equipos':
                   return [
-                    { name: 'Altas/Bajas', icon: '👥', href: '/rh/equipos/altas-bajas' },
-                    { name: 'Inventario', icon: '📋', href: '/rh/equipos/inventario' },
-                    { name: 'Asignación', icon: '🎯', href: '/rh/equipos/asignacion' },
-                    { name: 'Status', icon: '📊', href: '/rh/equipos/status' },
+                    { name: 'Altas/Bajas', icon: '👥', href: '/menu' },
+                    { name: 'Inventario', icon: '📋', href: '/menu' },
+                    { name: 'Asignación', icon: '🎯', href: '/menu' },
+                    { name: 'Status', icon: '📊', href: '/menu' },
                   ]; 
 
                 //SUB-MENU CLIENTES
                 case 'contratos':    
                   return [
                     { name: 'Altas/Bajas', icon: '👥', href: '/menu' },
-                    { name: 'Carga/Descarga', icon: '📤', href: '/dash' },
-                    { name: 'Base de Datos', icon: '🗄️', href: '/dash' },
-                    { name: 'Cumplimiento', icon: '✅', href: '/cliente/contratos/cumplimiento' }
+                    { name: 'Carga/Descarga', icon: '📤', href: '/menu' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/menu' },
+                    { name: 'Cumplimiento', icon: '✅', href: '/menu' }
                   ];
                 case 'facturas':
                   return [
-                    { name: 'Carga/Descarga', icon: '📤', href: '/cliente/facturas/carga' },
-                    { name: 'Administración', icon: '⚙️', href: '/cliente/facturas/admin' },
-                    { name: 'Pendientes', icon: '⏳', href: '/cliente/facturas/pendientes' },
-                    { name: 'Discrepancias', icon: '⚠️', href: '/cliente/facturas/discrepancias' }
+                    { name: 'Carga/Descarga', icon: '📤', href: '/menu' },
+                    { name: 'Administración', icon: '⚙️', href: '/menu' },
+                    { name: 'Pendientes', icon: '⏳', href: '/menu' },
+                    { name: 'Discrepancias', icon: '⚠️', href: '/menu' }
                   ];
                 case 'expedientes':
                   return [
-                    { name: 'Acta Constitutiva', icon: '📜', href: '/cliente/expedientes/acta' },
-                    { name: 'Constancia de Situación Fiscal', icon: '🏛️', href: '/cliente/expedientes/fiscal' },
-                    { name: 'Servicios', icon: '🔧', href: '/cliente/expedientes/servicios' },
+                    { name: 'Acta Constitutiva', icon: '📜', href: '/menu' },
+                    { name: 'Constancia de Situación Fiscal', icon: '🏛️', href: '/menu' },
+                    { name: 'Servicios', icon: '🔧', href: '/menu' },
                   ];
                 case 'contabilidad':
                   return [
-                    { name: 'Balances', icon: '⚖️', href: '/cliente/contabilidad/balances' },
-                    { name: 'Pagos', icon: '💳', href: '/cliente/contabilidad/pagos' },
-                    { name: 'Pendientes', icon: '⏳', href: '/cliente/contabilidad/pendientes' },
-                    { name: 'Impuestos', icon: '🏛️', href: '/cliente/contabilidad/impuestos' }
+                    { name: 'Balances', icon: '⚖️', href: '/menu' },
+                    { name: 'Pagos', icon: '💳', href: '/menu' },
+                    { name: 'Pendientes', icon: '⏳', href: '/menu' },
+                    { name: 'Impuestos', icon: '🏛️', href: '/menu' }
                   ];
 
                 //SUB-MENU PROVEEDORES
                 case 'contratos':
                   return [
-                    { name: 'Altas/Bajas', icon: '👥', href: '/proveedor/contratos/altas-bajas' },
-                    { name: 'Carga/Descarga', icon: '📤', href: '/proveedor/contratos/carga' },
-                    { name: 'Base de Datos', icon: '🗄️', href: '/proveedor/contratos/base-datos' },
-                    { name: 'Cumplimiento', icon: '✅', href: '/proveedor/contratos/cumplimiento' }
+                    { name: 'Altas/Bajas', icon: '👥', href: '/menu' },
+                    { name: 'Carga/Descarga', icon: '📤', href: '/menu' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/menu' },
+                    { name: 'Cumplimiento', icon: '✅', href: '/menu' }
                   ]; 
                 case 'facturas':
                   return [
-                    { name: 'Carga/Descarga', icon: '📤', href: '/proveedor/facturas/carga' },
-                    { name: 'Administración', icon: '⚙️', href: '/proveedor/facturas/admin' },
-                    { name: 'Pendientes', icon: '⏳', href: '/proveedor/facturas/pendientes' },
-                    { name: 'Discrepancias', icon: '⚠️', href: '/proveedor/facturas/discrepancias' }
+                    { name: 'Carga/Descarga', icon: '📤', href: '/menu' },
+                    { name: 'Administración', icon: '⚙️', href: '/menu' },
+                    { name: 'Pendientes', icon: '⏳', href: '/menu' },
+                    { name: 'Discrepancias', icon: '⚠️', href: '/menu' }
                   ];
                 case 'expedientes':
                   return [
-                    { name: 'Acta Constitutiva', icon: '📜', href: '/proveedor/expedientes/acta' },
-                    { name: 'Constancia de Situación Fiscal', icon: '🏛️', href: '/proveedor/expedientes/fiscal' },
-                    { name: 'Servicios', icon: '🔧', href: '/proveedor/expedientes/servicios' },
+                    { name: 'Acta Constitutiva', icon: '📜', href: '/menu' },
+                    { name: 'Constancia de Situación Fiscal', icon: '🏛️', href: '/menu' },
+                    { name: 'Servicios', icon: '🔧', href: '/menu' },
                   ];
                 case 'contabilidad':
                   return [
-                    { name: 'Balances', icon: '⚖️', href: '/proveedor/contabilidad/balances' },
-                    { name: 'Pagos', icon: '💳', href: '/proveedor/contabilidad/pagos' },
-                    { name: 'Pendientes', icon: '⏳', href: '/proveedor/contabilidad/pendientes' },
-                    { name: 'Impuestos', icon: '🏛️', href: '/proveedor/contabilidad/impuestos' }
+                    { name: 'Balances', icon: '⚖️', href: '/menu' },
+                    { name: 'Pagos', icon: '💳', href: '/menu' },
+                    { name: 'Pendientes', icon: '⏳', href: '/menu' },
+                    { name: 'Impuestos', icon: '🏛️', href: '/menu' }
                   ];        
 
                 //SUB-MENU EMPRESA    
                   case 'finanzas':
                   return [
-                    { name: 'Tesorería', icon: '💰', href: '/empresa/finanzas/tesoreria' },
-                    { name: 'SAT', icon: '🏛️', href: '/empresa/finanzas/sat' },
-                    { name: 'Secretaria de Finanzas', icon: '🧾', href: '/empresa/finanzas/secretaria' },
-                    { name: 'Balances', icon: '⚖️', href: '/empresa/finanzas/balances' },
+                    { name: 'Tesorería', icon: '💰', href: '/menu' },
+                    { name: 'SAT', icon: '🏛️', href: '/menu' },
+                    { name: 'Secretaria de Finanzas', icon: '🧾', href: '/menu' },
+                    { name: 'Balances', icon: '⚖️', href: '/menu' },
                   ];
                 case 'infraestructura':
                   return [
-                    { name: 'Organigrama', icon: '🏢', href: '/empresa/infraestructura/organigrama' },
-                    { name: 'Instalaciones', icon: '🏭', href: '/empresa/infraestructura/instalaciones' },
-                    { name: 'Inventarios', icon: '📋', href: '/empresa/infraestructura/inventarios' },
-                    { name: 'Activos', icon: '💼', href: '/empresa/infraestructura/activos' },
+                    { name: 'Organigrama', icon: '🏢', href: '/menu' },
+                    { name: 'Instalaciones', icon: '🏭', href: '/menu' },
+                    { name: 'Inventarios', icon: '📋', href: '/menu' },
+                    { name: 'Activos', icon: '💼', href: '/menu' },
                   ];
                 case 'legal':
                   return [
-                    { name: 'Permisos', icon: '🧾', href: '/empresa/legal/permisos' },
-                    { name: 'Lineamientos', icon: '📋', href: '/empresa/legal/lineamientos' },
-                    { name: 'SAT', icon: '🏛️', href: '/empresa/legal/sat' },
-                    { name: 'Aviso de registro REPSE', icon: '📤', href: '/empresa/legal/repse' },
+                    { name: 'Permisos', icon: '🧾', href: '/menu' },
+                    { name: 'Lineamientos', icon: '📋', href: '/menu' },
+                    { name: 'SAT', icon: '🏛️', href: '/menu' },
+                    { name: 'Aviso de registro REPSE', icon: '📤', href: '/menu' },
                   ];   
                   case 'facturación':
                   return [
-                    { name: 'Altas/Bajas', icon: '👥', href: '/empresa/facturacion/altas-bajas' },
-                    { name: 'Carga/Descarga', icon: '📤', href: '/empresa/facturacion/carga' },
-                    { name: 'Base de Datos', icon: '🗄️', href: '/empresa/facturacion/base-datos' },
-                    { name: 'Refacturación', icon: '📋', href: '/empresa/facturacion/refacturacion' },
+                    { name: 'Altas/Bajas', icon: '👥', href: '/menu' },
+                    { name: 'Carga/Descarga', icon: '📤', href: '/menu' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/menu' },
+                    { name: 'Refacturación', icon: '📋', href: '/menu' },
                   ];
 
                   //SUB-MENU AUDITORIA
                 case 'monitoreo':
                   return [
-                    { name: 'Rendimiento', icon: '📊', href: '/auditoria/monitoreo/rendimiento' },
-                    { name: 'Procesos', icon: '📤', href: '/auditoria/monitoreo/procesos' },
-                    { name: 'Alertas', icon: '⚠️', href: '/auditoria/monitoreo/alertas' },
-                    { name: 'Reportes', icon: '🎯', href: '/auditoria/monitoreo/reportes' },
+                    { name: 'Rendimiento', icon: '📊', href: '/menu' },
+                    { name: 'Procesos', icon: '📤', href: '/menu' },
+                    { name: 'Alertas', icon: '⚠️', href: '/menu' },
+                    { name: 'Reportes', icon: '🎯', href: '/menu' },
                   ];
                 case 'accesos':
                   return [
-                    { name: 'Conexiones', icon: '⚙️', href: '/auditoria/accesos/conexiones' },
-                    { name: 'Consultas', icon: '📋', href: '/auditoria/accesos/consultas' },
-                    { name: 'Bajas', icon: '👥', href: '/auditoria/accesos/bajas' },
-                    { name: 'Restricciones', icon: '⚠️', href: '/auditoria/accesos/restricciones' },
+                    { name: 'Conexiones', icon: '⚙️', href: '/menu' },
+                    { name: 'Consultas', icon: '📋', href: '/menu' },
+                    { name: 'Bajas', icon: '👥', href: '/menu' },
+                    { name: 'Restricciones', icon: '⚠️', href: '/menu' },
                   ];           
                 case 'base de datos':
                   return [
-                    { name: 'Base de Datos', icon: '🗄️', href: '/auditoria/base-datos/database' },
-                    { name: 'Administración', icon: '💼', href: '/auditoria/base-datos/admin' },
-                    { name: 'Reportar', icon: '⚠️', href: '/auditoria/base-datos/reportar' },
-                    { name: 'Capacidad', icon: '✅', href: '/auditoria/base-datos/capacidad' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/menu' },
+                    { name: 'Administración', icon: '💼', href: '/menu' },
+                    { name: 'Reportar', icon: '⚠️', href: '/menu' },
+                    { name: 'Capacidad', icon: '✅', href: '/menu' },
                   ];  
                 case 'discrepancias':
                   return [
-                    { name: 'Cargas', icon: '📤', href: '/auditoria/discrepancias/cargas' },
-                    { name: 'Estatus de los archivos', icon: '✅', href: '/auditoria/discrepancias/estatus' },
-                    { name: 'Modificaciones', icon: '📋', href: '/auditoria/discrepancias/modificaciones' },
-                    { name: 'Avisos', icon: '⚠️', href: '/auditoria/discrepancias/avisos' },
+                    { name: 'Cargas', icon: '📤', href: '/menu' },
+                    { name: 'Estatus de los archivos', icon: '✅', href: '/menu' },
+                    { name: 'Modificaciones', icon: '📋', href: '/menu' },
+                    { name: 'Avisos', icon: '⚠️', href: '/menu' },
                   ];  
                   //SUB-MENU ADMINISTRADOR
                 case 'empresa':
                   return [
-                    { name: 'Finanzas', icon: '💰', href: '/empresa/finanzas' }, 
-                    { name: 'Infraestructura', icon: '🏭', href: '/empresa/infraestructura' },
-                    { name: 'Legal', icon: '🧾', href: '/empresa/legal' },
-                    { name: 'Facturación', icon: '📋', href: '/empresa/facturacion' },
+                    { name: 'Finanzas', icon: '💰', href: '/menu' }, 
+                    { name: 'Infraestructura', icon: '🏭', href: '/menu' },
+                    { name: 'Legal', icon: '🧾', href: '/menu' },
+                    { name: 'Facturación', icon: '📋', href: '/menu' },
                   ];
                 case 'auditoria':
                   return [
-                    { name: 'Monitoreo', icon: '📊', href: '/auditoria/monitoreo' },
-                    { name: 'Accesos', icon: '🔑', href: '/auditoria/accesos' },
-                    { name: 'Base de Datos', icon: '🗄️', href: '/auditoria/base-datos' },
-                    { name: 'Discrepancias', icon: '⚠️', href: '/auditoria/discrepancias' },
+                    { name: 'Monitoreo', icon: '📊', href: '/menu' },
+                    { name: 'Accesos', icon: '🔑', href: '/menu' },
+                    { name: 'Base de Datos', icon: '🗄️', href: '/menu' },
+                    { name: 'Discrepancias', icon: '⚠️', href: '/menu' },
                   ];           
                 case 'personal':
                   return [
-                    { name: 'Contratos', icon: '📋', href: '/rh/contratos' },
-                    { name: 'Expedientes', icon: '📋', href: '/rh/expedientes' },
-                    { name: 'Nómina', icon: '💰', href: '/rh/nomina' },
-                    { name: 'Equipos', icon: '💻', href: '/rh/equipos' },
+                    { name: 'Contratos', icon: '📋', href: '/menu' },
+                    { name: 'Expedientes', icon: '📋', href: '/menu' },
+                    { name: 'Nómina', icon: '💰', href: '/menu' },
+                    { name: 'Equipos', icon: '💻', href: '/menu' },
                   ];  
                 case 'configuracion':
                   return [
@@ -416,17 +413,17 @@ export default function Dashboard() {
                   ]; 
                   case 'clientes':
                   return [
-                    { name: 'Contratos', icon: '👥', href: '/clientes/contratos' },
-                    { name: 'Facturas', icon: '📋', href: '/clientes/facturas' },
-                    { name: 'Expedientes', icon: '💼', href: '/clientes/expedientes' },
-                    { name: 'Contabilidad', icon: '💰', href: '/clientes/contabilidad' },
+                    { name: 'Contratos', icon: '👥', href: '/menu' },
+                    { name: 'Facturas', icon: '📋', href: '/menu' },
+                    { name: 'Expedientes', icon: '💼', href: '/menu' },
+                    { name: 'Contabilidad', icon: '💰', href: '/menu' },
                   ];
                   case 'proveedores':
                   return [
-                    { name: 'Contratos', icon: '👥', href: '/proveedores/contratos' },
-                    { name: 'Facturas', icon: '📋', href: '/proveedores/facturas' },
-                    { name: 'Expedientes', icon: '💼', href: '/proveedores/expedientes' },
-                    { name: 'Contabilidad', icon: '💰', href: '/proveedores/contabilidad' },
+                    { name: 'Contratos', icon: '👥', href: '/menu' },
+                    { name: 'Facturas', icon: '📋', href: '/menu' },
+                    { name: 'Expedientes', icon: '💼', href: '/menu' },
+                    { name: 'Contabilidad', icon: '💰', href: '/menu' },
                   ]
                 default:
                   return [];  
@@ -442,7 +439,7 @@ export default function Dashboard() {
                   animatedItems ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
                 }`}
                 style={{ transitionDelay: `${(index + 4) * 100}ms` }}
-                onClick={(e) => navigateTo(item.id, e)}
+                onClick={(e) => navigateTo(item.id, `/${actualRole}/${item.id}`, e)}
               >
                 {/* Hover effect overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -translate-x-full group-hover:translate-x-full rounded-2xl"></div>
@@ -457,8 +454,9 @@ export default function Dashboard() {
                       {subItems.map((subItem, subIndex) => (
                         <div
                           key={subIndex}
-                          className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-lg p-2 border border-white/20 hover:bg-white/20 transition-all duration-200"
+                          className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-lg p-2 border border-white/20 hover:bg-white/20 transition-all duration-200 cursor-pointer"
                           style={{ animationDelay: `${subIndex * 100}ms` }}
+                          onClick={(e) => navigateTo(item.id, subItem.href, e)}
                         >
                           <span className="text-lg">{subItem.icon}</span>
                           <span className="text-white text-xs font-medium truncate">
