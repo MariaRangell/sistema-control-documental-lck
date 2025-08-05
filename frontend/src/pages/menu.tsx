@@ -65,6 +65,7 @@ const DocumentControlSystem: React.FC<DocumentControlSystemProps> = ({ user }) =
     };
   });
   
+  
 // 1. PRIMERO: Agregar la configuración de categorías por rol (al inicio de tu componente)
 const categoriesByRole = {
   cliente: [
@@ -285,19 +286,32 @@ const menuCategories: MenuItem[] = [
 
   // Filter documents based on search and filters
   useEffect(() => {
-    const filtered = documents.filter(doc => {
-      const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          doc.author.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = !typeFilter || doc.type === typeFilter;
-      const matchesStatus = !statusFilter || doc.status === statusFilter;
-      const matchesCategory = currentCategory === 'todos' || doc.category === currentCategory;
+  const filtered = documents.filter(doc => {
+    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        doc.author.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = !typeFilter || doc.type === typeFilter;
+    const matchesStatus = !statusFilter || doc.status === statusFilter;
+    const matchesCategory = currentCategory === 'todos' || currentCategory === 'all' || doc.category === currentCategory;
 
-      return matchesSearch && matchesType && matchesStatus && matchesCategory;
-    });
+    return matchesSearch && matchesType && matchesStatus && matchesCategory;
+  });
 
-    setFilteredDocuments(filtered);
-  }, [documents, searchTerm, typeFilter, statusFilter, currentCategory]);
+  setFilteredDocuments(filtered);
+}, [documents, searchTerm, typeFilter, statusFilter, currentCategory]);
 
+  // Función para manejar el click en categorías
+  const handleCategoryClick = (categoryId: string) => {
+    setCurrentCategory(categoryId);
+    console.log(`Filtrando por categoría: ${categoryId}`); // Para debug
+  };  
+
+  // Función para obtener el conteo de documentos por categoría
+  const getDocumentCountByCategory = (categoryId: string) => {
+    if (categoryId === 'todos'|| categoryId === 'all') {
+      return documents.length;
+    }
+    return documents.filter(doc => doc.category === categoryId).length;
+  };
   // Helper functions
   const getDocumentIcon = (type: string): string => {
     const icons: { [key: string]: string } = {
@@ -356,18 +370,22 @@ const menuCategories: MenuItem[] = [
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
+    const categoryWithPrefix = `${currentUser.role[0]}-${formData.docCategory}`;
+    
     const newDoc: Document = {
       id: documents.length + 1,
       title: formData.docTitle,
       type: formData.docType as 'pdf' | 'word' | 'excel' | 'imagen',
-      category: formData.docCategory,
+      category: categoryWithPrefix,
       status: 'activo',
       date: new Date().toISOString().split('T')[0],
-      author: 'Usuario Actual',
+      author: currentUser.username,
       size: '1.0 MB'
     };
 
     setDocuments(prev => [newDoc, ...prev]);
+    // Actualizamos la categoría actual para mostrar el documento recién agregado
+    setCurrentCategory(formData.docCategory);
     closeModal();
     alert('Documento agregado correctamente');
   };
@@ -869,6 +887,21 @@ const menuCategories: MenuItem[] = [
           <aside className="sidebar">
             <h3>🔖 Categorías</h3>
             <ul>
+              {/* Opción "Todos los documentos" disponible para todos los usuarios */}
+              <li>
+                <a 
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentCategory('all');
+                  }}
+                  className={'all' === currentCategory ? 'active' : ''}
+                >
+                  📋 Todos los documentos
+                </a>
+              </li>
+              
+              {/* Resto de categorías con filtros de roles */}
               {menuCategories
                 .filter(item => item.roles.some(role => currentUser.role[0] === role))
                 .map(item => (
@@ -999,12 +1032,12 @@ const menuCategories: MenuItem[] = [
             </div>
             <div className="form-group">
               <label htmlFor="docCategory">Categoría:</label>
-             <select 
-               id="docCategory" 
-               name="docCategory" 
-               value={formData.docCategory}
-               onChange={handleFormChange}
-   required
+              <select 
+                id="docCategory" 
+                name="docCategory" 
+                value={formData.docCategory}
+                onChange={handleFormChange}
+    required
 >
   <option value="">Seleccionar categoría</option>
   {getAvailableCategories().map(category => (

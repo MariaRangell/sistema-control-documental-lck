@@ -275,7 +275,7 @@ export default function MainLayout() {
                 const subItems = getSubItems(item.name, user.rol)
 
                 return subItems.length > 0 ? (
-                  <div key={item.name} className="relative group inline-block text-left">
+                  <div key={item.name} className="relative group">
                     <button className="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium text-black border-transparent hover:border-gray-300 hover:text-gray-700 focus:outline-none">
                       <item.icon className="mr-2 h-5 w-5 text-black" />
                       {item.name}
@@ -283,7 +283,7 @@ export default function MainLayout() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
-                    <div className="pointer-events-none group-hover:pointer-events-auto absolute left-0 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
+                    <div className="absolute left-0 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-30">
                       <div className="py-1">
                         {subItems.map((subItem, index) => (
                           <Link
