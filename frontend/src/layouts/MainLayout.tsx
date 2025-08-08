@@ -22,38 +22,23 @@ const navByRole: NavByRole = {
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
   empresa: [
-    { name: 'Finanzas', href: '#', icon: DollarSign },
-    { name: 'Facturación', href: '#', icon: FileDigit },
-    { name: 'Legal', href: '#', icon: Scale },
-    { name: 'Infraestructura', href: '#', icon: Building2 },
+   
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
   rh: [
-    { name: 'Nómina', href: '#', icon: DollarSign },
-    { name: 'Contratos', href: '#', icon: FileText },
-    { name: 'Expedientes', href: '#', icon: FolderOpen },
-    { name: 'Equipos', href: '#', icon: Monitor },
+  
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
   cliente: [
-    { name: 'Contabilidad', href: '#', icon: DollarSign },
-    { name: 'Contratos', href: '#', icon: FileText },
-    { name: 'Expedientes', href: '#', icon: FolderOpen },
-    { name: 'Facturas', href: '#', icon: FileDigit },
+
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
   proveedor: [
-    { name: 'Contabilidad', href: '#', icon: DollarSign },
-    { name: 'Contratos', href: '#', icon: FileText },
-    { name: 'Expedientes', href: '#', icon: FolderOpen },
-    { name: 'Facturas', href: '#', icon: FileDigit },
+  
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
   auditoria: [
-    { name: 'Accesos', href: '#', icon: FolderKey },
-    { name: 'Discrepancias', href: '#', icon: ArrowLeftRight },
-    { name: 'Base de Datos', href: '#', icon: Database },
-    { name: 'Monitoreo', href: '#', icon: FileClock },
+
     { name: 'Configuración', href: '/settings', icon: Settings },
   ],
 }
