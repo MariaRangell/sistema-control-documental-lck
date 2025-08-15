@@ -8,20 +8,23 @@ const client = new Client({
   port: 5432,
 });
 
-async function testConexion() {
+async function obtenerUsuarios() {
   try {
     await client.connect();
     console.log('Conectado a PostgreSQL');
 
-    const res = await client.query('SELECT NOW()');
-    console.log('Fecha y hora actual:', res.rows[0]);
+    const res = await client.query('SELECT * FROM usuarios'); // Consulta todos los usuarios
+    console.log('Usuarios en la tabla:');
+    res.rows.forEach((usuario, index) => {
+      console.log(`${index + 1}:`, usuario);
+    });
 
   } catch (err) {
-    console.error('Error en conexión o consulta:', err);
+    console.error('Error en consulta:', err);
   } finally {
     await client.end();
     console.log('Conexión cerrada');
   }
 }
 
-testConexion();
+obtenerUsuarios();
