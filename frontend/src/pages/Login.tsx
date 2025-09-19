@@ -1,205 +1,203 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-type ValidUsers = {
-  [key: string]: string;
-};
-
-const Login: React.FC = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Efecto de enfoque automático
-    const usernameInput = document.getElementById('username') as HTMLInputElement
+    const usernameInput = document.getElementById(
+      "username"
+    ) as HTMLInputElement;
     if (usernameInput) {
-      usernameInput.focus()
+      usernameInput.focus();
     }
-  }, [])
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // Datos de ejemplo (en un sistema real, esto se validaría en el servidor)
-    const validUsers: ValidUsers = {
-      'admin': 'admin123',
-      'usuario': 'password123',
-      'documental': 'doc2024'
-    }
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (validUsers[username] && validUsers[username] === password) {
-      setTimeout(() => {
-        setLoading(false)
-        navigate('/dashboard')
-      }, 2000)
-    } else {
-      setLoading(false)
-      setError('Usuario o contraseña incorrectos')
-      setPassword('')
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setTimeout(() => {
+          setLoading(false);
+          navigate("/dashboard");
+        }, 2000);
+      } else {
+        setLoading(false);
+        setError(data.message || "Usuario o contraseña incorrectos");
+        setPassword("");
+      }
+    } catch (err) {
+      setLoading(false);
+      setError("Error de conexión con el servidor");
     }
+  };
+
+  async function handleForgotPassword() {
+    if (!username.trim()) {
+      setError("Por favor ingresa tu nombre de usuario primero");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    setForgotPasswordMessage("");
+    setTimeout(() => {
+      setLoading(false);
+      setForgotPasswordMessage(
+        `Se ha enviado una solicitud de recuperación para el usuario "${username}" al administrador.`
+      );
+    }, 2000);
   }
 
-  const showForgotPassword = () => {
-    alert('Funcionalidad de recuperación de contraseña.\n\nEn un sistema real, esto enviaría un enlace de recuperación al email del usuario.')
-  }
-
+  // 🎨 Estilos
   const bodyStyle: React.CSSProperties = {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    background: 'linear-gradient(135deg, #1a1a1a 0%, #333333 100%)',
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
+    background: "linear-gradient(135deg, #1a1a1a 0%, #333333 100%)",
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
     margin: 0,
   };
 
   const containerStyle: React.CSSProperties = {
-    background: 'rgba(255, 255, 255, 0.98)',
-    backdropFilter: 'blur(10px)',
-    borderRadius: '20px',
-    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
-    padding: '40px',
-    width: '100%',
-    maxWidth: '400px',
-    textAlign: 'center' as const,
-    border: '2px solid rgba(220, 20, 60, 0.2)',
-    animation: 'slideIn 0.5s ease-out',
-  };
-
-  const logoStyle: React.CSSProperties = {
-    maxWidth: '180px',
-    maxHeight: '80px',
-    height: 'auto',
-    display: 'block',
-    margin: '0 auto 20px',
-  };
-
-  const titleStyle: React.CSSProperties = {
-    color: '#1a1a1a',
-    fontSize: '28px',
-    marginBottom: '10px',
-    fontWeight: 600,
-  };
-
-  const subtitleStyle: React.CSSProperties = {
-    color: '#555',
-    marginBottom: '30px',
-    fontSize: '16px',
-  };
-
-  const formGroupStyle: React.CSSProperties = {
-    marginBottom: '20px',
-    textAlign: 'left' as const,
-  };
-
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    marginBottom: '8px',
-    color: '#1a1a1a',
-    fontWeight: 500,
+    background: "rgba(255, 255, 255, 0.98)",
+    backdropFilter: "blur(10px)",
+    borderRadius: "20px",
+    boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+    padding: "40px",
+    width: "100%",
+    maxWidth: "400px",
+    textAlign: "center" as const,
+    border: "2px solid rgba(220, 20, 60, 0.2)",
   };
 
   const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '15px',
-    border: '2px solid #ddd',
-    borderRadius: '10px',
-    fontSize: '16px',
-    transition: 'all 0.3s ease',
-    background: '#f8f8f8',
-    color: '#333',
-    boxSizing: 'border-box' as const,
-  };
-
-  const inputFocusStyle: React.CSSProperties = {
-    ...inputStyle,
-    outline: 'none',
-    borderColor: '#dc143c',
-    background: 'white',
-    boxShadow: '0 0 0 3px rgba(220, 20, 60, 0.1)',
-    transform: 'translateY(-2px)',
+    width: "100%",
+    padding: "15px",
+    border: "2px solid #ddd",
+    borderRadius: "10px",
+    fontSize: "16px",
+    transition: "all 0.3s ease",
+    background: "#f8f8f8",
+    color: "#333",
+    boxSizing: "border-box" as const,
   };
 
   const buttonStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '15px',
-    background: 'linear-gradient(135deg, #dc143c, #8b0000)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '10px',
-    fontSize: '16px',
+    width: "100%",
+    padding: "15px",
+    background: "linear-gradient(135deg, #dc143c, #8b0000)",
+    color: "white",
+    border: "none",
+    borderRadius: "10px",
+    fontSize: "16px",
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    marginTop: '10px',
-    boxShadow: '0 4px 15px rgba(220, 20, 60, 0.3)',
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    marginTop: "10px",
+    boxShadow: "0 4px 15px rgba(220, 20, 60, 0.3)",
   };
 
   const errorStyle: React.CSSProperties = {
-    background: '#ffe6e6',
-    color: '#dc143c',
-    padding: '10px',
-    borderRadius: '8px',
-    marginBottom: '20px',
-    fontSize: '14px',
-    border: '1px solid #ffb3b3',
-    display: error ? 'block' : 'none',
+    background: "#ffe6e6",
+    color: "#dc143c",
+    padding: "10px",
+    borderRadius: "8px",
+    marginBottom: "20px",
+    fontSize: "14px",
+    border: "1px solid #ffb3b3",
+    display: error ? "block" : "none",
   };
 
   const successStyle: React.CSSProperties = {
-    background: '#f0f0f0',
-    color: '#141414',
-    padding: '10px',
-    borderRadius: '8px',
-    marginBottom: '20px',
-    fontSize: '14px',
-    border: '1px solid #ddd',
-    display: loading ? 'block' : 'none',
+    background: "#f0f0f0",
+    color: "#141414",
+    padding: "10px",
+    borderRadius: "8px",
+    marginBottom: "20px",
+    fontSize: "14px",
+    border: "1px solid #ddd",
+    display: loading ? "block" : "none",
   };
 
-  const forgotStyle: React.CSSProperties = {
-    marginTop: '20px',
+  const forgotPasswordSuccessStyle: React.CSSProperties = {
+    background: "#e6ffe6",
+    color: "#2d5a2d",
+    padding: "10px",
+    borderRadius: "8px",
+    marginBottom: "20px",
+    fontSize: "14px",
+    border: "1px solid #b3ffb3",
+    display: forgotPasswordMessage ? "block" : "none",
   };
 
   const forgotLinkStyle: React.CSSProperties = {
-    color: '#dc143c',
-    textDecoration: 'none',
-    fontSize: '14px',
-    transition: 'color 0.3s ease',
-    cursor: 'pointer',
+    color: "#dc143c",
+    textDecoration: "none",
+    fontSize: "14px",
+    transition: "color 0.3s ease",
+    cursor: "pointer",
+    background: "none",
+    border: "none",
+    padding: 0,
   };
 
   return (
     <div style={bodyStyle}>
       <div style={containerStyle}>
-        <div style={{ width: '100%', margin: '0 auto 20px', textAlign: 'center' as const }}>
-          <img 
-            src="/logo1.png" 
-            alt="Logo LCK Consultores" 
-            style={logoStyle}
+        {/* Logo */}
+        <div style={{ width: "100%", margin: "0 auto 20x", textAlign: "center" }}>
+          <img
+            src="/logo1.png"
+            alt="Logo LCK Consultores"
+            style={{
+              maxWidth: "180px",
+              maxHeight: "80px",
+              height: "auto",
+              display: "block",
+              margin: "0 auto 20px",
+            }}
           />
         </div>
-        
-        <h1 style={titleStyle}>Control Documental</h1>
-        <p style={subtitleStyle}>Ingresa tus credenciales para acceder</p>
-        
-        <div style={errorStyle}>
-          {error}
-        </div>
-        
-        <div style={successStyle}>
-          Iniciando sesión...
-        </div>
-        
+
+        <h1 style={{ color: "#1a1a1a", fontSize: "28px", marginBottom: "10px", fontWeight: 600 }}>
+          Control Documental
+        </h1>
+        <p style={{ color: "#555", marginBottom: "30px", fontSize: "16px" }}>
+          Ingresa tus credenciales para acceder
+        </p>
+
+        <div style={errorStyle}>{error}</div>
+        <div style={successStyle}>Iniciando sesión...</div>
+        <div style={forgotPasswordSuccessStyle}>{forgotPasswordMessage}</div>
+
         <form onSubmit={handleSubmit}>
-          <div style={formGroupStyle}>
-            <label htmlFor="username" style={labelStyle}>
+          {/* Usuario */}
+          <div style={{ marginBottom: "20px", textAlign: "left" }}>
+            <label
+              htmlFor="username"
+              style={{ display: "block", marginBottom: "8px", color: "#1a1a1a", fontWeight: 500 }}
+            >
               Nombre de Usuario
             </label>
             <input
@@ -211,41 +209,66 @@ const Login: React.FC = () => {
               required
             />
           </div>
-          
-          <div style={formGroupStyle}>
-            <label htmlFor="password" style={labelStyle}>
+
+          {/* Contraseña con ícono centrado */}
+          <div style={{ marginBottom: "20px", textAlign: "left" }}>
+            <label
+              htmlFor="password"
+              style={{ display: "block", marginBottom: "8px", color: "#1a1a1a", fontWeight: 500 }}
+            >
               Contraseña
             </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={inputStyle}
-              required
-            />
+
+            {/* Contenedor relativo solo para el input */}
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ ...inputStyle, paddingRight: "45px" }}
+                required
+              />
+
+              {/* Botón con ícono centrado */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#dc143c",
+                  fontSize: "18px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 0,
+                }}
+                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
-          
-          <button
-            type="submit"
-            disabled={loading}
-            style={buttonStyle}
-          >
-            {loading ? 'Iniciando Sesión...' : 'Iniciar Sesión'}
+
+          <button type="submit" disabled={loading} style={buttonStyle}>
+            {loading ? "Iniciando Sesión..." : "Iniciar Sesión"}
           </button>
         </form>
-        
-        <div style={forgotStyle}>
-          <button
-            onClick={showForgotPassword}
-            style={forgotLinkStyle}
-          >
+
+        <div style={{ marginTop: "20px" }}>
+          <button type="button" onClick={handleForgotPassword} style={forgotLinkStyle}>
             ¿Olvidaste tu contraseña?
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login 
+export default Login;

@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Test Backend Connection",
+			"type": "shell",
+			"command": "npx prisma db pull && npm run dev",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Check PostgreSQL Connection",
+			"type": "shell",
+			"command": "node -e \"const { Pool } = require('pg'); const pool = new Pool({ user: 'postgres', host: 'localhost', database: 'ControlDocumental', password: '28toby', port: 5432 }); pool.connect().then(client => { console.log('✅ Conexión exitosa a PostgreSQL'); client.release(); pool.end(); }).catch(err => { console.error('❌ Error al conectar a PostgreSQL:', err); pool.end(); });\"",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}
