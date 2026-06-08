@@ -19,6 +19,8 @@ Sistema web para la carga, gestión y administración de documentos internos, or
 
 ![Módulo](captura%203.png)
 
+![Módulo](captura%204.png)
+
 ---
 
 ## 🎯 Descripción
