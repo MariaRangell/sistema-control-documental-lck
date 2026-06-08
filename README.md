@@ -12,9 +12,9 @@ Sistema web para la carga, gestión y administración de documentos internos, or
 
 ## 📸 Demo
 
-![Vista principal](captura1.png)
-![Vista del sistema](captura2.png)
-![Módulo](captura3.png)
+![Vista principal](captura 1.png)
+![Vista del sistema](captura 2.png)
+![Módulo](captura 3.png)
 
 ---
 
