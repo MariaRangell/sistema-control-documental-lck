@@ -76,6 +76,7 @@ Puedes ejecutarlo localmente siguiendo los pasos de instalación.
 
 ---
 
-## 👩‍💻 Autora
+## 👩‍💻 Autores
 
 **María Guadalupe Rangel** · [mariarangell.github.io](https://mariarangell.github.io)
+**DanielSR996** (Responsable de revisar el proyecto)
